@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <cmath>
 
 const unsigned int TreeFile::sAsciiSmallCaseMin = 97;
 const unsigned int TreeFile::sAsciiSmallCaseMax = 122;
@@ -11,6 +12,8 @@ const unsigned int TreeFile::sAsciiUpperCaseMin = 65;
 const unsigned int TreeFile::sAsciiUpperCaseMax = 90;
 
 const unsigned int TreeFile::sAsciiAprostrophe = 39;
+
+const unsigned int TreeFile::sAprostropheValue = 26;
 
 TreeFile::TreeFile()
 {
@@ -27,6 +30,7 @@ bool TreeFile::analyze(const std::string & inFilename)
   reset();
 
   unsigned int _totals[27];
+  std::memset(&_totals[0], 0, 27*sizeof(unsigned int));
   std::ifstream _file;
   if(FileUtils::open(inFilename, std::ios_base::in | std::ios_base::ate, _file))
   {
@@ -44,7 +48,7 @@ bool TreeFile::analyze(const std::string & inFilename)
         std::cout << (((1.f*_currentPos)/_size) * 100) << "%" << std::endl;
       }
       _file.read(&_c[0],  2);
-      if(getCharValue(_c[0], _v1) && getCharValue(_c[1], _v2))
+      if(getValueFromChar(_c[0], _v1) && getValueFromChar(_c[1], _v2))
       {
         _totals[_v1]++;
         mData[_v1][_v2]++;
@@ -54,36 +58,54 @@ bool TreeFile::analyze(const std::string & inFilename)
     }
     _file.close();
   }
-
+//  for(int _i(0); _i < 27; _i++)
+//  {
+//    std::cout << "Total[" << _i << "] --> " << _totals[_i] << std::endl;
+//  }
   // Normalize
   for(int _i(0); _i < 27; _i++)
   {
     for(int _ii(0); _ii < 27; _ii++)
     {
-      mData[_i][_ii] = ((mData[_i][_ii] * 1.f)/_totals[_i]) * 1000;
+      mData[_i][_ii] = ((mData[_i][_ii] * 1.)/_totals[_i]) * pow(2,16);
     }
   }
 }
 
-bool TreeFile::getCharValue(char c, unsigned int & value)
+bool TreeFile::getCharFromValue(unsigned int value, char & c) const
+{
+  if(value == sAprostropheValue)
+  {
+    c = '\'';
+    return true;
+  }
+  if(value >= 0 && value < 26)
+  {
+    c = (char) (value + sAsciiSmallCaseMin);
+    return true;
+  }
+  return false;
+}
+
+bool TreeFile::getValueFromChar(char c, unsigned int & value)  const
 {
   value = (unsigned int) c;
 
-  if(value >= TreeFile::sAsciiSmallCaseMin && value <= TreeFile::sAsciiSmallCaseMax) // Lowercase
+  if(value >= sAsciiSmallCaseMin && value <= sAsciiSmallCaseMax) // Lowercase
   {
-    value -= TreeFile::sAsciiSmallCaseMin;
+    value -= sAsciiSmallCaseMin;
     return true;
   }
 
-  if(value >= TreeFile::sAsciiUpperCaseMin && value <= TreeFile::sAsciiUpperCaseMax) // Uppercase
+  if(value >= sAsciiUpperCaseMin && value <= sAsciiUpperCaseMax) // Uppercase
   {
-    value -= TreeFile::sAsciiUpperCaseMin;
+    value -= sAsciiUpperCaseMin;
     return true;
   }
 
-  if(value == TreeFile::sAsciiAprostrophe ) // Apostrophe
+  if(value == sAsciiAprostrophe ) // Apostrophe
   {
-    value = 26; // hard coded
+    value = sAprostropheValue; // hard coded
     return true;
   }
   return false; // Invalid char
@@ -128,15 +150,18 @@ bool TreeFile::writeToCSV(const std::string & inFilename) const
   std::ofstream _file;
   if(FileUtils::open(inFilename, std::ios_base::out | std::ios_base::trunc, _file))
   {
+    char _srcC;
+    char _dstC;
     for(int _i(0); _i < 27; _i++)
     {
       for(int _ii(0); _ii < 27; _ii++)
       {
-//        _file <<
-//        _file.write();
+        getCharFromValue(_i, _srcC);
+        getCharFromValue(_ii, _dstC);
+        _file << _srcC << ", " << _dstC << ", " << std::to_string(mData[_i][_ii]) << "\n";
       }
     }
-    std::cout << "Data written to: " << inFilename << std::endl;
+    std::cout << "CSV data written to: " << inFilename << std::endl;
     _file.close();
   }
   else

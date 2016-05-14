@@ -16,7 +16,8 @@ public:
 
 private:
   void reset();
-  bool getCharValue(char c, unsigned int & value);
+  bool getValueFromChar(char c, unsigned int & value) const;
+  bool getCharFromValue(unsigned int value, char & c) const;
 
   unsigned int mData[27][27];
 
@@ -27,4 +28,6 @@ private:
   static const unsigned int sAsciiUpperCaseMax;
 
   static const unsigned int sAsciiAprostrophe;
+
+  static const unsigned int sAprostropheValue;
 };
