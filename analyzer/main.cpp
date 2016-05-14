@@ -5,5 +5,6 @@
 int main (int argc, char *argv[])
 {
     TreeFile _file;
-    _file.write("/home/harry/tmp2/out.th");
+    _file.generateDummyValues();
+    _file.write("/home/harry/workspaces/qt-workspace/word-qualifier/resources/sample.io");
 }

@@ -14,6 +14,11 @@ TreeFile::~TreeFile()
 
 }
 
+bool TreeFile::analyze(const std::string & inFilename)
+{
+  reset();
+}
+
 bool TreeFile::read(const std::string & inFilename)
 {
 
@@ -30,7 +35,7 @@ void TreeFile::reset()
 bool TreeFile::write(const std::string & inFilename) const
 {
   std::ofstream _file;
-  if(FileUtils::open(inFilename, _file))
+  if(FileUtils::open(inFilename, std::ios_base::binary | std::ios_base::trunc, _file))
   {
     for(int _i(0); _i < 27; _i++)
     {
@@ -45,5 +50,16 @@ bool TreeFile::write(const std::string & inFilename) const
   else
   {
     std::cerr << "Failed to open file: " << inFilename << std::endl;
+  }
+}
+
+void TreeFile::generateDummyValues()
+{
+  for(int _i(0); _i < 27; _i++)
+  {
+    for(int _ii(0); _ii < 27; _ii++)
+    {
+      mData[_i][_ii] = 10;
+    }
   }
 }

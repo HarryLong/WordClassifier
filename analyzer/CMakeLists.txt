@@ -25,7 +25,7 @@ SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${OpenMP_CXX_FLAGS} -O0 -g -
 #SET(CMAKE_BUILD_TYPE RELEASE)
 SET(CMAKE_BUILD_TYPE RELWITHDEBINFO)
 
-SET(FILE_MANAGER_SRC filemanager/reader filemanager/tree_file filemanager/writer filemanager/file_utils)
+SET(FILE_MANAGER_SRC filemanager/tree_file filemanager/file_utils)
 SET(SRC_FILES main)
 
 add_executable(Analyzer ${SRC_FILES} ${FILE_MANAGER_SRC})

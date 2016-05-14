@@ -1,6 +1,5 @@
 #include "file_utils.h"
 #include <iostream>
-#include <fstream>
 #include <cmath>
 
 #define MAX_8_BITS 256
@@ -130,9 +129,9 @@ float FileUtils::readFloat32(unsigned char * data, int n_bytes)
     return (integral_part+fractional_part);
 }
 
-bool FileUtils::open(const std::string & inFilename, std::ofstream & outFile)
+bool FileUtils::open(const std::string & inFilename, std::ios_base::openmode inOpenMode, std::ofstream & outFile)
 {
-  outFile.open(inFilename.c_str(), std::ios_base::binary | std::ios_base::trunc );
+  outFile.open(inFilename.c_str(), inOpenMode );
 
   return outFile.good();
 }
