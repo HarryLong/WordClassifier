@@ -14,6 +14,7 @@ public:
 
   void generateDummyValues();
 
+  std::string getLongestWord(const std::string & inFilename, int & inLength);
 private:
   void reset();
   bool getValueFromChar(char c, unsigned int & value) const;

@@ -10,10 +10,13 @@ int main (int argc, char *argv[])
 {
   TreeFile _file;
 
-  _file.analyze(INPUT_FILE);
-  _file.write(OUTPUT_IO_FILE);
-  _file.writeToCSV(OUTPUT_CSV_FILE);
+//  _file.analyze(INPUT_FILE);
+//  _file.write(OUTPUT_IO_FILE);
+//  _file.writeToCSV(OUTPUT_CSV_FILE);
 
+  int _length;
+  std::string _longestWord(_file.getLongestWord(INPUT_FILE, _length));
+  std::cout << "Longest word: " << _longestWord << " [ " << _length << " ]" << std::endl;
 
 //  _file.generateDummyValues();
 //  _file.write("/home/harry/workspaces/qt-workspace/word-qualifier/resources/sample.io");
