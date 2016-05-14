@@ -5,6 +5,8 @@
 #include <cstring>
 #include <cmath>
 
+#define NORMALIZATION 100000
+
 const unsigned int TreeFile::sAsciiSmallCaseMin = 97;
 const unsigned int TreeFile::sAsciiSmallCaseMax = 122;
 
@@ -67,7 +69,7 @@ bool TreeFile::analyze(const std::string & inFilename)
   {
     for(int _ii(0); _ii < 27; _ii++)
     {
-      mData[_i][_ii] = ((mData[_i][_ii] * 1.)/_totals[_i]) * pow(2,16);
+      mData[_i][_ii] = ((mData[_i][_ii] * 1.)/_totals[_i]) * NORMALIZATION;
     }
   }
 }
@@ -89,7 +91,7 @@ std::string TreeFile::getLongestWord(const std::string & inFilename, int & inLen
       _file.read(&_c, 1);
       if(_c != '\n')
       {
-        _currentWord.append(_c);
+        _currentWord += _c;
         _currentLength++;
       }
       else
