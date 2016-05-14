@@ -129,11 +129,19 @@ float FileUtils::readFloat32(unsigned char * data, int n_bytes)
     return (integral_part+fractional_part);
 }
 
+bool FileUtils::open(const std::string & inFilename, std::ios_base::openmode inOpenMode, std::ifstream & outFile)
+{
+  outFile.open(inFilename.c_str(), inOpenMode );
+
+  return outFile.is_open();
+}
+
+
 bool FileUtils::open(const std::string & inFilename, std::ios_base::openmode inOpenMode, std::ofstream & outFile)
 {
   outFile.open(inFilename.c_str(), inOpenMode );
 
-  return outFile.good();
+  return outFile.is_open();
 }
 
 

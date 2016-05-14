@@ -16,7 +16,7 @@ public:
 
   static void insertPadding(unsigned char * data, int from, int to);
 
+  static bool open(const std::string & inFilename, std::ios_base::openmode inOpenMode, std::ifstream & outFile);
   static bool open(const std::string & inFilename, std::ios_base::openmode inOpenMode, std::ofstream & outFile);
-
 };
 
