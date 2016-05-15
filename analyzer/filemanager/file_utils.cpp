@@ -145,3 +145,39 @@ bool FileUtils::open(const std::string & inFilename, std::ios_base::openmode inO
 }
 
 
+std::string FileUtils::getLongestWord(const std::string & inFilename, int & inLength)
+{
+  std::string _longestWord("");
+  inLength = 0;
+  std::ifstream _file;
+  if(FileUtils::open(inFilename, std::ios_base::in | std::ios_base::ate, _file))
+  {
+    std::streampos _size = _file.tellg(); // Get size
+    _file.seekg(0, std::ios_base::beg); // Go back to beginning
+    int _currentLength = 0;
+    std::string _currentWord;
+    char _c;
+    while(_file.tellg() < _size)
+    {
+      _file.read(&_c, 1);
+      if(_c != '\n')
+      {
+        _currentWord += _c;
+        _currentLength++;
+      }
+      else
+      {
+        if(_currentLength > inLength)
+        {
+          inLength = _currentLength;
+          _longestWord = _currentWord;
+        }
+        _currentWord.clear();
+        _currentLength = 0;
+      }
+    }
+    _file.close();
+  }
+  return _longestWord;
+}
+

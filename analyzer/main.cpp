@@ -1,6 +1,7 @@
 
 #include <iostream>
-#include "filemanager/tree_file.h"
+#include "filemanager/tree_file_strength.h"
+#include "filemanager/tree_file_elimination.h"
 
 #define OUTPUT_CSV_FILE "/home/harry/workspaces/qt-workspace/word-qualifier/resources/sample.csv"
 #define OUTPUT_IO_FILE "/home/harry/workspaces/qt-workspace/word-qualifier/resources/sample.io"
@@ -8,11 +9,13 @@
 
 int main (int argc, char *argv[])
 {
-  TreeFile _file;
+  TreeFileElimination _file;
 
-  _file.analyze(INPUT_FILE);
+  _file.generateDummyValues();
   _file.write(OUTPUT_IO_FILE);
-  _file.writeToCSV(OUTPUT_CSV_FILE);
+//  _file.analyze(INPUT_FILE);
+//  _file.write(OUTPUT_IO_FILE);
+//  _file.writeToCSV(OUTPUT_CSV_FILE);
 
 //  int _length;
 //  std::string _longestWord(_file.getLongestWord(INPUT_FILE, _length));

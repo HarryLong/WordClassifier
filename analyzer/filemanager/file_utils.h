@@ -18,5 +18,7 @@ public:
 
   static bool open(const std::string & inFilename, std::ios_base::openmode inOpenMode, std::ifstream & outFile);
   static bool open(const std::string & inFilename, std::ios_base::openmode inOpenMode, std::ofstream & outFile);
+
+  std::string getLongestWord(const std::string & inFilename, int & inLength);
 };
 
