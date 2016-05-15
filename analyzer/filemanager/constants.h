@@ -2,6 +2,8 @@
 
 class Constants{
 public:
+  static const unsigned int sDimension = 3;
+
   static const unsigned int sAsciiSmallCaseMin = 97;
   static const unsigned int sAsciiSmallCaseMax = 122;
 

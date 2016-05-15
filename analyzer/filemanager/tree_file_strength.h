@@ -1,13 +1,13 @@
 #pragma once
 
-#define DIMENSION 3
 
 #include <cmath>
 #include <map>
 #include <string>
 #include <vector>
+#include "constants.h"
 
-class TreeFileStrength{
+template <unsigned int n = Constants::sDimension> class TreeFileStrength{
 public:
   TreeFileStrength();
   ~TreeFileStrength();
@@ -18,9 +18,14 @@ public:
 
   void generateDummyValues();
 
+  const unsigned int * getData() const;
+
 private:
+  bool getIndex(char inChars[n], unsigned int & outIndex) const;
+  std::vector<char> getChars(int inIndex) const;
   void reset();
 
-
-  unsigned int mData[27][27];
+  unsigned int mData[(unsigned int)pow(27,n)];
 };
+
+#include "tree_file_strength.tpp"

@@ -1,32 +1,18 @@
 #include "tree_file_elimination.h"
 #include "file_utils.h"
+#include "converter.h"
+
 #include <stdlib.h>     /* srand, rand */
 #include <iostream>     /* srand, rand */
 
-template <unsigned int n> Combination<n>::Combination(std::initializer_list<unsigned int> inValues) :
-mSize(n)
-{
-  int _i(0);
-  for(auto _it(inValues.begin()); _it != inValues.end() && _i < mSize; _it++, _i++)
-  {
-      mValues[_i] = *_it;
-  }
-}
-
 ///
 
-TreeFileElimination::TreeFileElimination() :
-mDimension(DIMENSION)
+TreeFileElimination::TreeFileElimination()
 {
 
 }
 
 TreeFileElimination::~TreeFileElimination()
-{
-
-}
-
-bool TreeFileElimination::analyze(const std::string & inFilename)
 {
 
 }
@@ -43,9 +29,9 @@ bool TreeFileElimination::write(const std::string & inFilename) const
   {
     for(auto _combinationIt(mInvalidCombinations.cbegin()); _combinationIt != mInvalidCombinations.cend(); _combinationIt++)
     {
-      for(int _d(0); _d < mDimension; _d++)
+      for(int _d(0); _d < Constants::sDimension; _d++)
       {
-        _file.write((char*) FileUtils::toBin(_combinationIt->mValues[_d], 2), 2);
+        _file.write((char*) FileUtils::toBin(_combinationIt->mValues[_d], 1), 1);
       }
     }
     std::cout << "Data written to: " << inFilename << std::endl;
@@ -59,7 +45,35 @@ bool TreeFileElimination::write(const std::string & inFilename) const
 
 bool TreeFileElimination::writeToCSV(const std::string & inFilename) const
 {
+  std::ofstream _file;
+  if(FileUtils::open(inFilename, std::ios_base::out | std::ios_base::trunc, _file))
+  {
+    char _c;
+    for(auto _combinationIt(mInvalidCombinations.cbegin()); _combinationIt != mInvalidCombinations.cend(); _combinationIt++)
+    {
+      for(int _d(0); _d < Constants::sDimension; _d++)
+      {
+        if(_d != 0)
+          _file << ", ";
+        if(Converter::fromValue(_combinationIt->mValues[_d], _c))
+        {
+          _file << _c;
+        }
+        else
+        {
+          _file << "INVALID CHAR";
+        }
+      }
+      _file << '\n';
+    }
 
+    std::cout << "CSV data written to: " << inFilename << std::endl;
+    _file.close();
+  }
+  else
+  {
+    std::cerr << "Failed to open file: " << inFilename << std::endl;
+  }
 }
 
 void TreeFileElimination::generateDummyValues(int inCount)
@@ -73,6 +87,6 @@ void TreeFileElimination::generateDummyValues(int inCount)
 
 void TreeFileElimination::reset()
 {
-
+  mInvalidCombinations.clear();
 }
 

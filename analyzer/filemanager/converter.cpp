@@ -1,5 +1,6 @@
 #include "converter.h"
 #include "constants.h"
+#include <cmath>
 
 bool Converter::fromChar(char c, unsigned int & value)
 {
@@ -38,4 +39,38 @@ bool Converter::fromValue(unsigned int value, char & c)
     return true;
   }
   return false;
+}
+
+bool Converter::getIndex(unsigned int dimension, char * inChars , unsigned int & outIndex)
+{
+  outIndex = 0;
+  unsigned int _v;
+  bool _ok = true;
+  for(int _i(0); _i < dimension && _ok; _i++)
+  {
+    if(_ok = Converter::fromChar(inChars[_i], _v))
+    {
+      outIndex += _v * (pow(27, dimension-_i-1));
+    }
+  }
+
+  return _ok;
+}
+
+std::vector<char> Converter::getChars(unsigned int dimension, int inIndex)
+{
+  unsigned int _remains(inIndex);
+  std::vector<char> _chars;
+  char _c;
+  for(int _pow(dimension-1); _pow >= 0; _pow--)
+  {
+    unsigned int _divisor(pow(27, _pow));
+    unsigned int _thisRemains (_remains % _divisor);
+
+    Converter::fromValue((unsigned int) (_remains/pow(27, _pow)), _c);
+    _chars.push_back(_c);
+     _remains = _thisRemains;
+  }
+
+  return _chars;
 }
