@@ -2,13 +2,13 @@ const CHARS = 'abcdefghijklmnopqrstuvwxyz\''
 const VOWELS = 'aeiou'
 const CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
 
-const DATA_MAPPING = ['S2','S3','E2','E3','G2','G3'] // E=>End G=>Global N=>Letter Count
+const DATA_MAPPING = ['S2','S3','E2','E3','G2','G3']
 const DATA_SEPARATOR = 124 // ascii code of |
 const MAP = DATA_MAPPING.map(() => [])
 
-const MAX_WORD_LENGTH = 13
-const MIN_VOWEL_RATIO = 0.09
-const MAX_VOWEL_RATIO = 0.71
+const MAX_WORD_LENGTH = 14
+const MIN_VOWEL_RATIO = 0.10
+const MAX_VOWEL_RATIO = 0.80
 
 const setMap = data => {
   let counter = 0
@@ -17,7 +17,7 @@ const setMap = data => {
 
   data.forEach((b,i) => {
 
-    if (b.toString() == DATA_SEPARATOR) {
+    if (b == DATA_SEPARATOR) {
       separatorCounter++
       counter = 0
 
