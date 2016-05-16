@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "combined-stream": "^1.0.5",
-    "follow-redirects": "^0.1.0"
+    "follow-redirects": "^0.1.0",
+    "jsonfile": "^2.3.1"
   },
   "devDependencies": {},
   "scripts": {
