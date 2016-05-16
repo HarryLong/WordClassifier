@@ -64,10 +64,13 @@ function init(sourcePaths) {
   currentPath = sourcePaths[0]
   console.log('Source Path:', currentPath)
 
+  if(!currentPath)
+    return processQueue()
+
   let checkedFile = path.dirname(currentPath) + '/checked.txt'
   let isChecked = fs.existsSync(checkedFile)
 
-  if(!currentPath || isChecked)
+  if(isChecked)
     return processQueue()
 
   fs.writeFileSync(checkedFile, '');
