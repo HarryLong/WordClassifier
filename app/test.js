@@ -30,6 +30,8 @@ cs.pipe(
     .on('close', gzip)
 )
 
+// retrieveTestData()
+
 // create gzip
 function gzip () {
   fs.createReadStream(dest)
@@ -115,15 +117,12 @@ function retrieveTestData() {
       let file = '../resources/test.json'
 
       jsonfile.readFile(file, (err, wordsExisting) => {
-        console.log('wordsExisting', wordsExisting.length)
-
+        console.log('Size:', wordsExisting.length)
         wordsExisting.push(words)
-
         jsonfile.writeFile(file, wordsExisting, function (err) {
-          console.error(err)
+            retrieveTestData()
         })
       })
-      test()
     })
   })
 }
