@@ -24,11 +24,12 @@ var sourcePathsQueue = []
 function find() {
   walk('../')
     .on('path', path => {
-      srcs.forEach(src => {
-        if (path.indexOf(src) != -1) {
-          sourcePathsQueue.push(path)
-        }
-      })
+      if(path.indexOf('/resources') != -1 || path.indexOf('/output') != -1)
+        srcs.forEach(src => {
+          if (path.indexOf(src) != -1) {
+            sourcePathsQueue.push(path)
+          }
+        })
     })
     .on('end', () => {
       processQueue()
