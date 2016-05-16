@@ -14,7 +14,7 @@ public:
 
   static const unsigned int sAprostropheValue = 26;
 
-  static const unsigned int sEliminationThreshold = 10;
+  static const unsigned int sEliminationThreshold = 100;
   static const bool sNormalize = true;
 
   static const unsigned int sNormalization = 100000;
