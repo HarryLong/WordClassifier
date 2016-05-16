@@ -14,8 +14,8 @@ public:
 
   static const unsigned int sAprostropheValue = 26;
 
-  static const unsigned int sEliminationThreshold = 10;
-  static const bool sNormalize = false;
+  static const unsigned int sEliminationThreshold = 15;
+  static const bool sNormalize = true;
 
   static const unsigned int sNormalization = 100000;
 };
