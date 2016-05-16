@@ -11,7 +11,7 @@ template <unsigned int n = Constants::sDimension> class TreeFileStrength{
 public:
   TreeFileStrength();
   ~TreeFileStrength();
-  bool analyze(const std::string & inFilename);
+  virtual bool analyze(const std::string & inFilename);
   bool read(const std::string & inFilename);
   bool write(const std::string & inFilename) const;
   bool writeToCSV(const std::string & inFilename) const;
@@ -19,11 +19,10 @@ public:
   void generateDummyValues();
 
   const unsigned int * getData() const;
-
-private:
+protected:
+  void reset();
   bool getIndex(char inChars[n], unsigned int & outIndex) const;
   std::vector<char> getChars(int inIndex) const;
-  void reset();
 
   unsigned int mData[(unsigned int)pow(27,n)];
 };

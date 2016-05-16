@@ -13,4 +13,8 @@ public:
   static const unsigned int sAsciiAprostrophe = 39;
 
   static const unsigned int sAprostropheValue = 26;
+
+  static const unsigned int sEliminationThreshold = 10;
+  static const bool sNormalize = false;
+
 };

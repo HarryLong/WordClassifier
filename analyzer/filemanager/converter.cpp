@@ -74,3 +74,19 @@ std::vector<char> Converter::getChars(unsigned int dimension, int inIndex)
 
   return _chars;
 }
+
+bool Converter::isAlphaCharacter(const char & c)
+{
+  return (c >= Constants::sAsciiSmallCaseMin && c <= Constants::sAsciiSmallCaseMax)  // Lowercase
+  || (c >= Constants::sAsciiUpperCaseMin && c <= Constants::sAsciiUpperCaseMax);
+}
+
+char Converter::toLowerCase(const char & c)
+{
+  if(c >= Constants::sAsciiUpperCaseMin && c <= Constants::sAsciiUpperCaseMax) // Uppercase
+  {
+    return (char) (c + (Constants::sAsciiSmallCaseMin-Constants::sAsciiUpperCaseMin));
+  }
+  return c;
+}
+

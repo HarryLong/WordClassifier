@@ -1,6 +1,7 @@
 #include "file_utils.h"
 #include <iostream>
 #include <cmath>
+#include "converter.h"
 
 #define MAX_8_BITS 256
 #define MAX_16_BITS 65536
@@ -144,6 +145,122 @@ bool FileUtils::open(const std::string & inFilename, std::ios_base::openmode inO
   return outFile.is_open();
 }
 
+const std::set<char> FileUtils::sVowels = FileUtils::getVowels();
+bool FileUtils::getVowelStatistics(const std::string & inFilename, double & outMeanVowelRatio, double & outVowelSD)
+{
+  std::ifstream _file;
+  if(FileUtils::open(inFilename, std::ios_base::in | std::ios_base::ate, _file))
+  {
+    unsigned int _nVowels= 0;
+    unsigned int _totalVowelCount = 0;
+    unsigned int _totalCharCount = 0;
+
+    std::vector<std::string> _words;
+    std::vector<unsigned int> _vowelCounts;
+    std::string _currentWord;
+    std::streampos _size = _file.tellg(); // Get size
+    _file.seekg(0, std::ios_base::beg); // Go back to beginning
+    char _c;
+    while(_file.tellg() < _size)
+    {
+      if(_file.tellg() % 1000 == 0)
+      {
+        std::cout << ((1.0*_file.tellg() / _size) * 100) << " %" << std::endl;
+      }
+      _file.read(&_c, 1);
+      if(_c == '\n')
+      {
+        _words.push_back(_currentWord);
+        _vowelCounts.push_back(_nVowels);
+        _currentWord.clear();
+        _nVowels = 0;
+      }
+      else if(Converter::isAlphaCharacter(_c))
+      {
+        _totalCharCount++;
+        _currentWord += _c;
+        if(sVowels.find(Converter::toLowerCase(_c)) != sVowels.end())
+        {
+          _totalVowelCount++;
+          _nVowels++;
+        }
+      }
+    }
+    _file.close();
+
+    if(_vowelCounts.size() != _words.size())
+    {
+      std::cerr << "Should be equal! FATAL ERROR " << std::endl;
+      exit(1);
+    }
+
+    outMeanVowelRatio = (_totalVowelCount*1.0)/_totalCharCount;
+
+    double _squaredDiff = 0;
+    for(int _i(0); _i < _words.size(); _i++)
+    {
+      double _vowelRatio = (1.0 * _vowelCounts.at(_i))/_words.at(_i).length();
+      _squaredDiff += pow(outMeanVowelRatio-_vowelRatio, 2);
+    }
+    _squaredDiff /= _words.size();
+
+    outVowelSD = sqrt(_squaredDiff);
+    return true;
+  }
+  return false;
+}
+
+bool FileUtils::getStatistics(const std::string & inFilename, int & outMaxLength, std::string & outLongestWord,
+  double & outMeanLength, double & outSD)
+{
+  std::vector<std::string> _words;
+  outMaxLength = 0;
+  double _lengthSum;
+  std::ifstream _file;
+  if(FileUtils::open(inFilename, std::ios_base::in | std::ios_base::ate, _file))
+  {
+    std::streampos _size = _file.tellg(); // Get size
+    _file.seekg(0, std::ios_base::beg); // Go back to beginning
+    int _currentLength = 0;
+    std::string _currentWord;
+    char _c;
+    while(_file.tellg() < _size)
+    {
+      _file.read(&_c, 1);
+      if(_c != '\n')
+      {
+        _currentWord += _c;
+        _currentLength++;
+      }
+      else
+      {
+        if(_currentLength > outMaxLength)
+        {
+          outMaxLength = _currentLength;
+          outLongestWord = _currentWord;
+        }
+        _lengthSum += _currentLength;
+        _words.push_back(_currentWord);
+        _currentWord.clear();
+        _currentLength = 0;
+      }
+    }
+    _file.close();
+    outMeanLength = _lengthSum/_words.size();
+
+    // Standard deviation
+    double _squaredDiff = 0;
+    for(auto _it(_words.begin()); _it != _words.end(); _it++)
+    {
+      _squaredDiff += pow(_it->length() - outMeanLength, 2);
+    }
+    _squaredDiff /= _words.size();
+    outSD = std::sqrt(_squaredDiff);
+
+    return true;
+  }
+  return false;
+}
 
 std::string FileUtils::getLongestWord(const std::string & inFilename, int & inLength)
 {
@@ -179,5 +296,17 @@ std::string FileUtils::getLongestWord(const std::string & inFilename, int & inLe
     _file.close();
   }
   return _longestWord;
+}
+
+std::set<char> FileUtils::getVowels()
+{
+  std::set<char> _vowels;
+  _vowels.insert('a');
+  _vowels.insert('e');
+  _vowels.insert('i');
+  _vowels.insert('o');
+  _vowels.insert('u');
+
+  return _vowels;
 }
 
