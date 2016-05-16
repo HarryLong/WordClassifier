@@ -23,7 +23,7 @@ template <unsigned int n> class TreeFileElimination{
 public:
   TreeFileElimination();
   ~TreeFileElimination();
-  bool process(const TreeFileStrength<n> & inTreeFile, unsigned int threshold = Constants::sEliminationThreshold);
+  bool process(const TreeFileStrength<n> & inTreeFile, unsigned int threshold);
   bool contains(const Combination<n> & inCombination) const;
 
   template <unsigned int nn> bool eliminate(const TreeFileElimination<nn> & inOtherTreeFile);
