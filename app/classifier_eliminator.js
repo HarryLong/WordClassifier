@@ -4,13 +4,19 @@ const CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
 
 const DATA_MAPPING = ['S2','S3','E2','E3','G2','G3']
 const DATA_SEPARATOR = 124 // ascii code of |
-const MAP = DATA_MAPPING.map(() => [])
 
 const MAX_WORD_LENGTH = 14
 const MIN_VOWEL_RATIO = 0.10
 const MAX_VOWEL_RATIO = 0.80
 
+var MAP = []
+
 const setMap = data => {
+  MAP = DATA_MAPPING.map(() => [])
+  getMap(data)
+}
+
+const getMap = data => {
   let counter = 0
   let separatorCounter = 0
   let numberOfLetters = 0
