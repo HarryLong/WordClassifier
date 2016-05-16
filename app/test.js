@@ -29,7 +29,7 @@ function find() {
     .on('path', path => {
       if(path.indexOf('/resources') != -1 || path.indexOf('/output') != -1)
         srcs.forEach(src => {
-          if (path.indexOf(src) != -1) {
+          if (path && path.indexOf(src) != -1) {
             sourcePathsQueue.push(path)
           }
         })
@@ -41,7 +41,7 @@ function find() {
 
 function processQueue() {
   var tempArr = []
-  if(sourcePathsQueue.length) {
+  if(sourcePathsQueue.length > 5) {
     let unSorted = sourcePathsQueue.splice(0, 6)
     srcs.forEach((src, i) => {
       unSorted.forEach( unSortedSrc => {
@@ -61,14 +61,13 @@ function setReport(average) {
 }
 
 function init(sourcePaths) {
-  console.log('Source Path:', sourcePaths[0])
-
   currentPath = sourcePaths[0]
+  console.log('Source Path:', currentPath)
 
   let checkedFile = path.dirname(currentPath) + '/checked.txt'
   let isChecked = fs.existsSync(checkedFile)
 
-  if(isChecked)
+  if(!currentPath || isChecked)
     return processQueue()
 
   fs.writeFileSync(checkedFile, '');
