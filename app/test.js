@@ -156,7 +156,7 @@ function testLocal() {
       process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`)
     })
 
-    setReport(sum/counter).toFixed(2)
+    setReport((sum/counter).toFixed(2))
     console.log('')
     processQueue()
   })
