@@ -4,8 +4,15 @@ const http = require('follow-redirects').http
 const classifier = require('./classifier_eliminator')
 const combinedStream = require('combined-stream');
 
-const srcs = ['../resources/sample_elimination_2d.io',
-              '../resources/sample_elimination_3d.io']
+const srcs = [
+  '../resources/sample_start_elimination_2d.io',
+  '../resources/sample_start_elimination_3d.io',
+  '../resources/sample_ending_elimination_2d.io',
+  '../resources/sample_ending_elimination_3d.io',
+  '../resources/sample_elimination_2d.io',
+  '../resources/sample_elimination_3d.io'
+]
+
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
 
@@ -55,14 +62,14 @@ function test() {
       let words = JSON.parse(body)
       let correctCounter = 0
       for (var word in words) {
-        if(words.hasOwnProperty(word)) {
+        if (words.hasOwnProperty(word)) {
           let isEnglish = classifier.test(word)
           isEnglish == words[word] && correctCounter++
           // console.log(word, words[word], isEnglish)
         }
       }
 
-      sum = sum + (100 * correctCounter) / Object.keys(words).length
+      sum = sum + ((100 * correctCounter) / Object.keys(words).length)
 
       process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`);
       // console.log('Result', (100 * correctCounter) / Object.keys(words).length, '%')
