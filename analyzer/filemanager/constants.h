@@ -17,5 +17,5 @@ public:
   static const unsigned int sEliminationThreshold = 10;
   static const bool sNormalize = true;
 
-  static const unsigned int sNormalization = 100000;
+  static const unsigned int sNormalization = 1000;
 };
