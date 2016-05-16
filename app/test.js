@@ -21,7 +21,7 @@ const dest = '../resources/sample_elimination_all.io'
 find()
 
 var sourcePathsQueue = []
-var report = JSON.parse(fs.readFileSync('../report.json'))
+var report = jsonfile.readFileSync('../report.json')
 var currentPath = ''
 
 function find() {
@@ -57,7 +57,7 @@ function processQueue() {
 
 function setReport(average) {
   report[currentPath] = average
-  fs.writeFileSync('../report.json', JSON.stringify(report))
+  jsonfile.writeFileSync('../report.json', report, {spaces: 2})
 }
 
 function init(sourcePaths) {
