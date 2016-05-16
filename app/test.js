@@ -1,5 +1,6 @@
 const zlib = require('zlib')
 const fs = require('fs')
+const path = require('path')
 const jsonfile = require('jsonfile')
 const http = require('follow-redirects').http
 const classifier = require('./classifier_eliminator')
@@ -20,6 +21,8 @@ const dest = '../resources/sample_elimination_all.io'
 find()
 
 var sourcePathsQueue = []
+var report = JSON.parse(fs.readFileSync('../report.json'))
+var currentPath = ''
 
 function find() {
   walk('../')
@@ -52,10 +55,25 @@ function processQueue() {
   }
 }
 
-function init(sourcePaths) {
+function setReport(average) {
+  report[currentPath] = average
+  fs.writeFileSync('../report.json', JSON.stringify(report))
+}
 
+function init(sourcePaths) {
   console.log('Source Path:', sourcePaths[0])
-  var cs = combinedStream.create()
+
+  currentPath = sourcePaths[0]
+
+  let checkedFile = path.dirname(currentPath) + '/checked.txt'
+  let isChecked = fs.existsSync(checkedFile)
+
+  if(isChecked)
+    return processQueue()
+
+  fs.writeFileSync(checkedFile, '');
+
+  let cs = combinedStream.create()
   sourcePaths.forEach(src => {
     cs.append(fs.createReadStream(src))
     cs.append(new Buffer('|'))
@@ -114,7 +132,7 @@ function testLive() {
 
       process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`)
       // console.log('Result', (100 * correctCounter) / Object.keys(words).length, '%')
-      testLive()
+      processQueue()
     })
   })
 }
@@ -137,6 +155,8 @@ function testLocal() {
       sum = sum + ((100 * correctCounter) / Object.keys(words).length)
       process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`)
     })
+
+    setReport(sum/counter).toFixed(2)
     console.log('')
     processQueue()
   })
