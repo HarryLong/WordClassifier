@@ -5,8 +5,6 @@
 #include <cstring>
 #include "converter.h"
 
-#define NORMALIZATION 100000
-
 template <unsigned int n> TreeFileStrength<n>::TreeFileStrength()
 {
   reset();
@@ -63,7 +61,7 @@ template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & 
     {
       for(int _i(0); _i < std::pow(27, n); _i++)
       {
-        mData[_i] = ((1.0 * mData[_i])/_totals[(unsigned int) (_i/std::pow(27, n-1))]) * NORMALIZATION;
+        mData[_i] = ((1.0 * mData[_i])/_totals[(unsigned int) (_i/std::pow(27, n-1))]) * Constants::sNormalization;
       }
     }
   }
