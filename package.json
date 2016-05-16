@@ -1,0 +1,24 @@
+{
+  "name": "word-classifier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "combined-stream": "^1.0.5",
+    "follow-redirects": "^0.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HarryLong/WordClassifier.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HarryLong/WordClassifier/issues"
+  },
+  "homepage": "https://github.com/HarryLong/WordClassifier#readme"
+}
