@@ -3,32 +3,67 @@ const fs = require('fs')
 const jsonfile = require('jsonfile')
 const http = require('follow-redirects').http
 const classifier = require('./classifier_eliminator')
-const combinedStream = require('combined-stream');
+const combinedStream = require('combined-stream')
+const walk = require('walkdir')
 
-const srcs = [
-  '../resources/sample_start_elimination_2d.io',
-  '../resources/sample_start_elimination_3d.io',
-  '../resources/sample_ending_elimination_2d.io',
-  '../resources/sample_ending_elimination_3d.io',
-  '../resources/sample_elimination_2d.io',
-  '../resources/sample_elimination_3d.io'
-]
-
-const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
+const srcs = [
+  'sample_start_elimination_2d.io',
+  'sample_start_elimination_3d.io',
+  'sample_ending_elimination_2d.io',
+  'sample_ending_elimination_3d.io',
+  'sample_elimination_2d.io',
+  'sample_elimination_3d.io'
+]
+const dest = '../resources/sample_elimination_all.io'
 
-var counter = 0
-var sum = 0
+find()
 
-var cs = combinedStream.create();
-srcs.forEach(src => {
-  cs.append(fs.createReadStream(src))
-  cs.append(new Buffer('|'))
-})
-cs.pipe(
-  fs.createWriteStream(dest)
-    .on('close', gzip)
-)
+var sourcePathsQueue = []
+
+function find() {
+  walk('../')
+    .on('path', path => {
+      srcs.forEach(src => {
+        if (path.indexOf(src) != -1) {
+          sourcePathsQueue.push(path)
+        }
+      })
+    })
+    .on('end', () => {
+      processQueue()
+  })
+}
+
+function processQueue() {
+  var tempArr = []
+  if(sourcePathsQueue.length) {
+    let unSorted = sourcePathsQueue.splice(0, 6)
+    srcs.forEach((src, i) => {
+      unSorted.forEach( unSortedSrc => {
+        if (unSortedSrc.indexOf(src) != -1)
+          tempArr[i] = unSortedSrc
+      })
+    })
+    init(tempArr)
+  } else {
+    console.log('DONE')
+  }
+}
+
+function init(sourcePaths) {
+
+  console.log('Source Path:', sourcePaths[0])
+  var cs = combinedStream.create()
+  sourcePaths.forEach(src => {
+    cs.append(fs.createReadStream(src))
+    cs.append(new Buffer('|'))
+  })
+  cs.pipe(
+    fs.createWriteStream(dest)
+      .on('close', gzip)
+  )
+}
 
 // retrieveTestData()
 
@@ -38,12 +73,12 @@ function gzip () {
     .pipe(zlib.createGzip())
     .pipe(
       fs.createWriteStream(zip)
-        .on('close', init)
+        .on('close', run)
     )
 }
 
 // read gzip
-function init() {
+function run() {
   classifier.init(
     zlib.gunzipSync(fs.readFileSync(zip))
   )
@@ -51,6 +86,8 @@ function init() {
 }
 // test classifier
 function testLive() {
+  let counter = 0
+  let sum = 0
 
   http.get('http://hola.org/challenges/word_classifier/testcase', (res) => {
     counter++
@@ -74,7 +111,7 @@ function testLive() {
 
       sum = sum + ((100 * correctCounter) / Object.keys(words).length)
 
-      process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`);
+      process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`)
       // console.log('Result', (100 * correctCounter) / Object.keys(words).length, '%')
       testLive()
     })
@@ -82,7 +119,10 @@ function testLive() {
 }
 
 function testLocal() {
+  let counter = 0
+  let sum = 0
   let file = '../resources/test.json'
+
   jsonfile.readFile(file, (err, wordsExisting) => {
     wordsExisting.forEach( words => {
       counter++
@@ -94,9 +134,10 @@ function testLocal() {
         }
       }
       sum = sum + ((100 * correctCounter) / Object.keys(words).length)
-      process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`);
+      process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`)
     })
     console.log('')
+    processQueue()
   })
 }
 
@@ -104,7 +145,6 @@ function testLocal() {
 function retrieveTestData() {
 
   http.get('http://hola.org/challenges/word_classifier/testcase', (res) => {
-    counter++
 
     let body = ''
 
