@@ -28,6 +28,7 @@ SET(CMAKE_BUILD_TYPE RELEASE)
 SET(FILE_MANAGER_SRC filemanager/tree_file_strength filemanager/tree_file_strength.tpp
 filemanager/utils filemanager/tree_file_elimination filemanager/constants filemanager/converter
 filemanager/file_utils filemanager/tree_file_elimination.tpp filemanager/endings_analyzer filemanager/endings_analyzer.tpp
+filemanager/start_analyzer filemanager/start_analyzer.tpp
 filemanager/char_combination filemanager/combination_filewriter filemanager/combination_filewriter.tpp)
 SET(SRC_FILES main)
 
