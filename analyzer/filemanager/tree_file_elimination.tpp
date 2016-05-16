@@ -42,7 +42,11 @@ template <unsigned int n> void TreeFileElimination<n>::reset()
 
 template <unsigned int n> bool TreeFileElimination<n>::contains(const Combination<n> & inCombination) const
 {
-  return std::find(mInvalidCombinations.begin(), mInvalidCombinations.end(), inCombination) != mInvalidCombinations.end();
+  if(std::find(mInvalidCombinations.begin(), mInvalidCombinations.end(), inCombination) != mInvalidCombinations.end())
+  {
+    return true;
+  }
+  return false;
 }
 
 template <unsigned int n> bool TreeFileElimination<n>::process(const TreeFileStrength<n> & inTreeFile, unsigned int inThreshold /*= 0*/)
@@ -74,25 +78,31 @@ template <unsigned int n> bool TreeFileElimination<n>::process(const TreeFileStr
 template <unsigned int n>
 template <unsigned int nn> bool TreeFileElimination<n>::eliminate(const TreeFileElimination<nn> & inOtherTreeFile)
 {
-  Combination<nn> _combination1;
-//  Combination<nn> _combination2;
-//  for(auto _it(mInvalidCombinations.begin()); _it != mInvalidCombinations.end(); )
-//  {
-////    for(int _ii(0); _ii < nn; _ii++)
-////    {
-////      _combination1.mValues[_ii] = _it->mValues[_ii];
-////    }
-////    for(int _ii(1); _ii < n; _ii++)
-////    {
-////      _combination2.mValues[_ii-1] = _it->mValues[_ii];
-////    }
-////    if(inOtherTreeFile.contains(_combination1) || inOtherTreeFile.contains(_combination2) )
-////    {
-////      _it = mInvalidCombinations.erase(_it);
-////    }
-////    else
-////    {
-////      _it++;
-////    }
-//  }
+  int _combinationCount(n-nn+1);
+  Combination<nn> _combinations[_combinationCount];
+
+  for(auto _it(mInvalidCombinations.begin()); _it != mInvalidCombinations.end(); )
+  {
+    for(int _startOffset(0); _startOffset < _combinationCount; _startOffset++)
+    {
+      for(int _i(_startOffset); _i < _startOffset + nn; _i++)
+      {
+        _combinations[_startOffset].mValues[_i-_startOffset] = _it->mValues[_i];
+      }
+    }
+    bool _keep(true);
+    for(int _i(0); _i < _combinationCount && _keep; _i++)
+    {
+      _keep = _keep && !inOtherTreeFile.contains(_combinations[_i]);
+    }
+
+    if(!_keep)
+    {
+      _it = mInvalidCombinations.erase(_it);
+    }
+    else
+    {
+      _it++;
+    }
+  }
 }

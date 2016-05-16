@@ -36,8 +36,8 @@
 
 #define VOWEL_STATS false
 #define GENERAL_STATS false
-#define GLOBAL_OCCURENCES false
-#define ENDING_OCCURENCES false
+#define GLOBAL_OCCURENCES true
+#define ENDING_OCCURENCES true
 #define START_OCCURENCES true
 
 int main (int argc, char *argv[])
@@ -68,21 +68,20 @@ int main (int argc, char *argv[])
 #endif // GENERAL_STATS
 
 #if GLOBAL_OCCURENCES
-  {
-    TreeFileStrength<2> _strengthFile2D;
-  _strengthFile2D.analyze(INPUT_FILE);
+    TreeFileStrength<2> _globalStrengthFile2D;
+  _globalStrengthFile2D.analyze(INPUT_FILE);
 
-  TreeFileStrength<3> _strengthFile3D;
-  _strengthFile3D.analyze(INPUT_FILE);
+  TreeFileStrength<3> _globalStrengthFile3D;
+  _globalStrengthFile3D.analyze(INPUT_FILE);
 
 //  TreeFileStrength<4> _strengthFile4D;
 //  _strengthFile4D.analyze(INPUT_FILE);
 
-  TreeFileElimination<2> _eliminator2D;
-  _eliminator2D.process(_strengthFile2D);
+  TreeFileElimination<2> _globalEliminator2D;
+  _globalEliminator2D.process(_globalStrengthFile2D);
 
-  TreeFileElimination<3> _eliminator3D;
-  _eliminator3D.process(_strengthFile3D);
+  TreeFileElimination<3> _globalEliminator3D;
+  _globalEliminator3D.process(_globalStrengthFile3D);
 
 //  TreeFileElimination<4> _eliminator4D;
 //  _eliminator4D.process(_strengthFile4D);
@@ -90,17 +89,16 @@ int main (int argc, char *argv[])
 //  std::cout << "Illiminating 4D" << std::endl;
 //  _eliminator4D.eliminate(_eliminator3D);
   std::cout << "Illiminating 3D" << std::endl;
-  _eliminator3D.eliminate(_eliminator2D);
+  _globalEliminator3D.eliminate(_globalEliminator2D);
 
-  _eliminator2D.write(OUTPUT_ELIMINATE_IO_FILE_2D);
-  _eliminator2D.writeToCSV(OUTPUT_ELIMINATE_CSV_FILE_2D);
+  _globalEliminator2D.write(OUTPUT_ELIMINATE_IO_FILE_2D);
+  _globalEliminator2D.writeToCSV(OUTPUT_ELIMINATE_CSV_FILE_2D);
 
-  _eliminator3D.write(OUTPUT_ELIMINATE_IO_FILE_3D);
-  _eliminator3D.writeToCSV(OUTPUT_ELIMINATE_CSV_FILE_3D);
+  _globalEliminator3D.write(OUTPUT_ELIMINATE_IO_FILE_3D);
+  _globalEliminator3D.writeToCSV(OUTPUT_ELIMINATE_CSV_FILE_3D);
 
 //  _eliminator4D.write(OUTPUT_ELIMINATE_IO_FILE_4D);
 //  _eliminator4D.writeToCSV(OUTPUT_ELIMINATE_CSV_FILE_4D);
-  }
 #endif // GLOBAL_OCCURENCES
 
 
@@ -112,20 +110,22 @@ int main (int argc, char *argv[])
     EndingAnalyzer<3> _endingsAnalyzer3D;
     _endingsAnalyzer3D.analyze(INPUT_FILE);
 
-    TreeFileElimination<2> _eliminator2D;
-    _eliminator2D.process(_endingsAnalyzer2D);
+    TreeFileElimination<2> _endingEliminator2D;
+    _endingEliminator2D.process(_endingsAnalyzer2D);
 
-    TreeFileElimination<3> _eliminator3D;
-    _eliminator3D.process(_endingsAnalyzer3D);
+    TreeFileElimination<3> _endingEliminator3D;
+    _endingEliminator3D.process(_endingsAnalyzer3D);
 
-    _eliminator3D.eliminate(_eliminator2D);
+    _endingEliminator2D.eliminate(_globalEliminator2D);
+    _endingEliminator3D.eliminate(_globalEliminator3D);
+    _endingEliminator3D.eliminate(_endingEliminator2D);
 
 
-    _eliminator2D.write(ENDING_ELIMINATE_IO_FILE_2D);
-    _eliminator2D.writeToCSV(ENDING_ELIMINATE_CSV_FILE_2D);
+    _endingEliminator2D.write(ENDING_ELIMINATE_IO_FILE_2D);
+    _endingEliminator2D.writeToCSV(ENDING_ELIMINATE_CSV_FILE_2D);
 
-    _eliminator3D.write(ENDING_ELIMINATE_IO_FILE_3D);
-    _eliminator3D.writeToCSV(ENDING_ELIMINATE_CSV_FILE_3D);
+    _endingEliminator3D.write(ENDING_ELIMINATE_IO_FILE_3D);
+    _endingEliminator3D.writeToCSV(ENDING_ELIMINATE_CSV_FILE_3D);
   }
 #endif // ENDING_OCCURENCES
 
@@ -143,6 +143,9 @@ int main (int argc, char *argv[])
     TreeFileElimination<3> _eliminator3D;
     _eliminator3D.process(_startAnalyzer3D);
 
+    _eliminator2D.eliminate(_globalEliminator2D);
+
+    _eliminator3D.eliminate(_globalEliminator3D);
     _eliminator3D.eliminate(_eliminator2D);
 
 
