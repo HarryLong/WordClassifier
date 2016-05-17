@@ -17,7 +17,7 @@ const srcs = [
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
-
+const testFile = '../resources/test.json'
 const reportFile = '../report.json'
 
 let sourcePathsQueue = []
@@ -65,7 +65,6 @@ function processQueue () {
           tempArr[i] = unSortedSrc
       })
     })
-    tempArr.push('../resources/char_occurence.io')
     merge(tempArr)
   } else {
     console.log('DONE')
@@ -77,6 +76,10 @@ function merge (sourcePaths) {
   if(!currentPath || report[path.dirname(currentPath)])
     return processQueue()
 
+  // push extra individuals
+  sourcePaths.push('../resources/char_occurence.io')
+
+  // log source path
   console.log('Source Path:', path.dirname(currentPath))
 
   let cs = combinedStream.create()
@@ -145,7 +148,6 @@ function testLive () {
 function testLocal () {
   let counter = 0
   let sum = 0
-  let file = '../resources/test.json'
 
   let counters = {
     truetrue: 0,
@@ -154,7 +156,7 @@ function testLocal () {
     falsetrue: 0
   }
 
-  jsonfile.readFile(file, (err, wordsExisting) => {
+  jsonfile.readFile(testFile, (err, wordsExisting) => {
     wordsExisting.forEach( words => {
       counter++
       let correctCounter = 0
@@ -196,12 +198,11 @@ function retrieveTestData () {
 
     res.on('end', () => {
       let words = JSON.parse(body)
-      let file = '../resources/test.json'
 
-      jsonfile.readFile(file, (err, wordsExisting) => {
+      jsonfile.readFile(testFile, (err, wordsExisting) => {
         console.log('Size:', wordsExisting.length)
         wordsExisting.push(words)
-        jsonfile.writeFile(file, wordsExisting, function (err) {
+        jsonfile.writeFile(testFile, wordsExisting, function (err) {
             retrieveTestData()
         })
       })
