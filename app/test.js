@@ -73,10 +73,10 @@ function processQueue () {
 
 function merge (sourcePaths) {
   currentPath = sourcePaths[0]
-  console.log('Source Path:', path.dirname(currentPath))
-
   if(!currentPath || report[path.dirname(currentPath)])
     return processQueue()
+
+  console.log('Source Path:', path.dirname(currentPath))
 
   let cs = combinedStream.create()
   sourcePaths.forEach(src => {
