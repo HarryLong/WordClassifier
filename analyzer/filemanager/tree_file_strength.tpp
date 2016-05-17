@@ -4,6 +4,12 @@
 #include <iostream>
 #include <cstring>
 #include "converter.h"
+#include "settings.h"
+
+#include "logger.h"
+#include <string>
+
+template <unsigned int n> std::mutex TreeFileStrength<n>::sMutex;
 
 template <unsigned int n> TreeFileStrength<n>::TreeFileStrength()
 {
@@ -15,16 +21,16 @@ template <unsigned int n> TreeFileStrength<n>::~TreeFileStrength()
 
 }
 
-template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & inFilename)
+template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & inFilename, int inNormalization)
 {
   reset();
   std::ifstream _file;
+  sMutex.lock();
   if(FileUtils::open(inFilename, std::ios_base::in | std::ios_base::ate, _file))
   {
     unsigned int _totals[27];
     std::memset(&_totals[0], 0, 27*sizeof(unsigned int));
     std::streampos _size = _file.tellg(); // Get size
-    std::cout << "Size : " << _size << std::endl;
     _file.seekg(0, std::ios_base::beg); // Go back to beginning
     std::streampos _currentPos;
     char _c[n];
@@ -36,7 +42,7 @@ template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & 
 
       if(_currentPos % 10000 == 0)
       {
-        std::cout << (((1.f*_currentPos)/_size) * 100) << "%" << std::endl;
+        LOG(std::to_string(((1.f*_currentPos)/_size) * 100) << "%");
       }
       bool _valid(true); // Ensure it doesn't contain the new line character
       for(int _i(0); _i < n && _valid; _i++)
@@ -57,11 +63,11 @@ template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & 
     _file.close();
 
     //NORMALIZE
-    if(Constants::sNormalize)
+    if(inNormalization > 0)
     {
       for(int _i(0); _i < std::pow(27, n); _i++)
       {
-        mData[_i] = ((1.0 * mData[_i])/_totals[(unsigned int) (_i/std::pow(27, n-1))]) * Constants::sNormalization;
+        mData[_i] = ((1.0 * mData[_i])/_totals[(unsigned int) (_i/std::pow(27, n-1))]) * inNormalization;
       }
     }
   }
@@ -69,6 +75,8 @@ template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & 
   {
     std::cerr << "Failed to open file: " << inFilename << std::endl;
   }
+
+  sMutex.unlock();
 }
 
 template <unsigned int n> bool TreeFileStrength<n>::read(const std::string & inFilename)
@@ -90,7 +98,6 @@ template <unsigned int n> bool TreeFileStrength<n>::write(const std::string & in
     {
       _file.write((char*) FileUtils::toBin(mData[_i], 2), 2);
     }
-    std::cout << "Data written to: " << inFilename << std::endl;
     _file.close();
   }
   else
@@ -114,7 +121,6 @@ template <unsigned int n> bool TreeFileStrength<n>::writeToCSV(const std::string
       }
       _file << mData[_i] << "\n";
     }
-    std::cout << "CSV Data written to: " << inFilename << std::endl;
     _file.close();
   }
   else

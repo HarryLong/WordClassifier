@@ -1,4 +1,6 @@
 #include "start_analyzer.h"
+#include <string>
+#include "logger.h"
 
 template <unsigned int n> StartAnalyzer<n>::StartAnalyzer()
 {
@@ -10,7 +12,7 @@ template <unsigned int n> StartAnalyzer<n>::~StartAnalyzer()
 
 }
 
-template <unsigned int n> bool StartAnalyzer<n>::analyze(const std::string & inFilename)
+template <unsigned int n> bool StartAnalyzer<n>::analyze(const std::string & inFilename, int inNormalization)
 {
   this->reset();
   std::ifstream _file;
@@ -27,7 +29,7 @@ template <unsigned int n> bool StartAnalyzer<n>::analyze(const std::string & inF
     {
       if(_currentPos % 10000 == 0)
       {
-        std::cout << (((1.f*_currentPos)/_size) * 100) << "%" << std::endl;
+        LOG(std::to_string(((1.f*_currentPos)/_size) * 100) << "%");
       }
       _file.read(&_c,  1);
 

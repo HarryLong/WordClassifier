@@ -1,4 +1,6 @@
 #include "endings_analyzer.h"
+#include "logger.h"
+#include <string>
 
 template <unsigned int n> EndingAnalyzer<n>::EndingAnalyzer()
 {
@@ -10,7 +12,7 @@ template <unsigned int n> EndingAnalyzer<n>::~EndingAnalyzer()
 
 }
 
-template <unsigned int n> bool EndingAnalyzer<n>::analyze(const std::string & inFilename)
+template <unsigned int n> bool EndingAnalyzer<n>::analyze(const std::string & inFilename, int inNormalization)
 {
   this->reset();
   std::ifstream _file;
@@ -27,7 +29,7 @@ template <unsigned int n> bool EndingAnalyzer<n>::analyze(const std::string & in
     {
       if(_currentPos % 10000 == 0)
       {
-        std::cout << (((1.f*_currentPos)/_size) * 100) << "%" << std::endl;
+        LOG(std::to_string(((1.f*_currentPos)/_size) * 100) << "%");
       }
       _file.read(&_c,  1);
 

@@ -31,5 +31,7 @@ public:
   std::string getLongestWord(const std::string & inFilename, int & inLength);
 
   static const std::set<char> sVowels;
+  static bool dirExists(const char *path);
+
 };
 

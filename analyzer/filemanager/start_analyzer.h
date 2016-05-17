@@ -13,7 +13,7 @@ template <unsigned int n > class StartAnalyzer : public TreeFileStrength<n> {
 public:
   StartAnalyzer();
   ~StartAnalyzer();
-  virtual bool analyze(const std::string & inFilename) override;
+  virtual bool analyze(const std::string & inFilename, int inNormalization) override;
 };
 
 #include "start_analyzer.tpp"

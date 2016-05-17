@@ -1,5 +1,7 @@
 #include "combination_filewriter.h"
 #include "converter.h"
+#include "logger.h"
+
 
 template <unsigned int n> CombinationFileWriter<n>::CombinationFileWriter()
 {
@@ -23,11 +25,11 @@ template <unsigned int n> bool CombinationFileWriter<n>::write(const std::string
         _file.write((char*) FileUtils::toBin(_combinationIt->mValues[_d], 1), 1);
       }
     }
-    std::cout << "Data written to: " << inFilename << std::endl;
+    LOG("Data written to: " << inFilename);
     _file.close();
     return true;
   }
-  std::cerr << "Failed to open file: " << inFilename << std::endl;
+  LOG("Failed to open file: " << inFilename);
   return false;
 }
 
@@ -55,11 +57,11 @@ template <unsigned int n> bool CombinationFileWriter<n>::writeToCSV(const std::s
       _file << '\n';
     }
 
-    std::cout << "CSV data written to: " << inFilename << std::endl;
+    LOG("CSV data written to: " << inFilename);
     _file.close();
 
     return true;
   }
-  std::cerr << "Failed to open file: " << inFilename << std::endl;
+  LOG("Failed to open file: " << inFilename);
   return false;
 }

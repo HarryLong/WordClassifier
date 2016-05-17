@@ -1,5 +1,8 @@
 #pragma once
 
+//#ifndef CONSTANTS_H
+//#define CONSTANTS_H
+
 class Constants{
 public:
   static const unsigned int sDimension = 3;
@@ -14,12 +17,7 @@ public:
 
   static const unsigned int sAprostropheValue = 26;
 
-  static unsigned int sGlobalEliminationThreshold = 10;
-  static unsigned int sStartEliminationThreshold = 100;
-  static unsigned int sEndEliminationThreshold = 100;
-  static unsigned int sNormalization = 100000;
-
-  static bool sNormalize = true;
-
-  static unsigned int sNormalization = 100000;
+  static const unsigned int sNormalization = 100000;
 };
+
+//#endif

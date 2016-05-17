@@ -13,7 +13,7 @@ template <unsigned int n > class EndingAnalyzer : public TreeFileStrength<n> {
 public:
   EndingAnalyzer();
   ~EndingAnalyzer();
-  virtual bool analyze(const std::string & inFilename) override;
+  virtual bool analyze(const std::string & inFilename, int inNormalization) override;
 };
 
 #include "endings_analyzer.tpp"

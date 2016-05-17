@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cmath>
 #include "converter.h"
+#include <string>
+#include "logger.h"
 
 #define MAX_8_BITS 256
 #define MAX_16_BITS 65536
@@ -165,7 +167,7 @@ bool FileUtils::getVowelStatistics(const std::string & inFilename, double & outM
     {
       if(_file.tellg() % 1000 == 0)
       {
-        std::cout << ((1.0*_file.tellg() / _size) * 100) << " %" << std::endl;
+        LOG(std::to_string((1.0*_file.tellg() / _size) * 100) << " %");
       }
       _file.read(&_c, 1);
       if(_c == '\n')
@@ -308,5 +310,22 @@ std::set<char> FileUtils::getVowels()
   _vowels.insert('u');
 
   return _vowels;
+}
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+bool FileUtils::dirExists(const char *path)
+{
+    struct stat info;
+
+    if(stat( path, &info ) != 0)
+        return false;
+    else if(info.st_mode & S_IFDIR)
+        return true;
+
+    return false;
 }
 
