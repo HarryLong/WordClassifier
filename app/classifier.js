@@ -6,7 +6,7 @@ const CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
 const DATA_MAPPING = ['S|2|0','S|3|1','E|2|0','E|3|1','G|2|0','G|3|1']
 const DATA_SEPARATOR = 124 // ascii code of |
 
-const MAX_WORD_LENGTH = 15 // SD
+const MAX_WORD_LENGTH = 15
 const MIN_VOWEL_RATIO = 0.10
 const MAX_VOWEL_RATIO = 0.80
 
@@ -63,13 +63,13 @@ const testByData = word => {
       let block = word.substr(0, numberOfLetters)
 
       if (MAP[index].indexOf(block) != -1)
-        counters[index] += 1
+        counters[index]++
 
     } else if (typeOfData == 'E') {
       let block = word.substr(-numberOfLetters)
 
       if (MAP[index].indexOf(block) != -1)
-        counters[index] += 1
+        counters[index]++
 
     } else if (typeOfData == 'G') {
       for (let i = 0; i < word.length - (numberOfLetters - 1); i++) {
@@ -79,7 +79,7 @@ const testByData = word => {
           block += word[i + j]
 
         if (MAP[index].indexOf(block) != -1)
-          counters[index] += 1
+          counters[index]++
       }
     }
   })
