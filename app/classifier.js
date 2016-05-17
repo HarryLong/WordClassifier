@@ -3,7 +3,7 @@ const VOWELS = 'aeiou'
 const CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
 
 // [type of data | number of letters | max fault tolerance]
-const DATA_MAPPING = ['S|2|0','S|3|1','E|2|0','E|3|1','G|2|0','G|3|1', 'O|1|0']
+const DATA_MAPPING = ['S|2|0','S|3|0','E|2|0','E|3|0','G|2|0','G|3|0', 'O|1|0']
 const DATA_SEPARATOR = 124 // ascii code of |
 
 const MAX_WORD_LENGTH = 15
