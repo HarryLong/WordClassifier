@@ -18,14 +18,29 @@ const srcs = [
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
 
-find()
+const reportFile = '../report.json'
+
+let sourcePathsQueue = []
+let report
+let currentPath
+
+getReport()
+initFiles()
 // retrieveTestData()
 
-var sourcePathsQueue = []
-var report = jsonfile.readFileSync('../report.json')
-var currentPath = ''
+function getReport () {
+  if (!fs.existsSync(reportFile))
+    jsonfile.writeFileSync(reportFile, {})
 
-function find() {
+  report = jsonfile.readFileSync(reportFile)
+}
+
+function setReport (average) {
+  report[currentPath] = average
+  jsonfile.writeFileSync(reportFile, report, {spaces: 2})
+}
+
+function initFiles () {
   walk('../')
     .on('path', path => {
       if(path.indexOf('/resources') != -1 || path.indexOf('/output') != -1)
@@ -40,7 +55,7 @@ function find() {
   })
 }
 
-function processQueue() {
+function processQueue () {
   var tempArr = []
   if(sourcePathsQueue.length > 5) {
     let unSorted = sourcePathsQueue.splice(0, 6)
@@ -50,31 +65,18 @@ function processQueue() {
           tempArr[i] = unSortedSrc
       })
     })
-    init(tempArr)
+    merge(tempArr)
   } else {
     console.log('DONE')
   }
 }
 
-function setReport(average) {
-  report[currentPath] = average
-  jsonfile.writeFileSync('../report.json', report, {spaces: 2})
-}
-
-function init(sourcePaths) {
+function merge (sourcePaths) {
   currentPath = sourcePaths[0]
   console.log('Source Path:', currentPath)
 
-  if(!currentPath)
+  if(!currentPath || report[currentPath])
     return processQueue()
-
-  // let checkedFile = path.dirname(currentPath) + '/checked.txt'
-  // let isChecked = fs.existsSync(checkedFile)
-  //
-  // if(isChecked)
-  //   return processQueue()
-  //
-  // fs.writeFileSync(checkedFile, '');
 
   let cs = combinedStream.create()
   sourcePaths.forEach(src => {
@@ -99,14 +101,14 @@ function gzip () {
 }
 
 // read gzip
-function run() {
+function run () {
   classifier.init(
     zlib.gunzipSync(fs.readFileSync(zip))
   )
   testLocal()
 }
 // test classifier
-function testLive() {
+function testLive () {
   let counter = 0
   let sum = 0
 
@@ -139,7 +141,7 @@ function testLive() {
   })
 }
 
-function testLocal() {
+function testLocal () {
   let counter = 0
   let sum = 0
   let file = '../resources/test.json'
@@ -184,7 +186,7 @@ function testLocal() {
 }
 
 // test classifier
-function retrieveTestData() {
+function retrieveTestData () {
 
   http.get('http://hola.org/challenges/word_classifier/testcase', (res) => {
 
