@@ -13,8 +13,7 @@ const srcs = [
   'sample_ending_elimination_2d.io',
   'sample_ending_elimination_3d.io',
   'sample_elimination_2d.io',
-  'sample_elimination_3d.io',
-  'char_occurence.io'
+  'sample_elimination_3d.io'
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
@@ -66,6 +65,7 @@ function processQueue () {
           tempArr[i] = unSortedSrc
       })
     })
+    tempArr.push('../resources/char_occurence.io')
     merge(tempArr)
   } else {
     console.log('DONE')
