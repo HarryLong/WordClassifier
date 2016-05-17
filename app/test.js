@@ -36,7 +36,7 @@ function getReport () {
 }
 
 function setReport (average) {
-  report[currentPath] = average
+  report[path.dirname(currentPath)] = average
   jsonfile.writeFileSync(reportFile, report, {spaces: 2})
 }
 
@@ -73,9 +73,9 @@ function processQueue () {
 
 function merge (sourcePaths) {
   currentPath = sourcePaths[0]
-  console.log('Source Path:', currentPath)
+  console.log('Source Path:', path.dirname(currentPath))
 
-  if(!currentPath || report[currentPath])
+  if(!currentPath || report[path.dirname(currentPath)])
     return processQueue()
 
   let cs = combinedStream.create()
