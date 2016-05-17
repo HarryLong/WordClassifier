@@ -3,7 +3,7 @@ const VOWELS = 'aeiou'
 const CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
 
 // [type of data | number of letters | max fault tolerance]
-const DATA_MAPPING = ['S|2|0','S|3|1','E|2|0','E|3|1','G|2|0','G|3|1']
+const DATA_MAPPING = ['S|2|0','S|3|1','E|2|0','E|3|1','G|2|0','G|3|1', 'O|1|0']
 const DATA_SEPARATOR = 124 // ascii code of |
 
 const MAX_WORD_LENGTH = 15
@@ -20,7 +20,6 @@ const initMap = data => {
 const setMap = data => {
   let counter = 0
   let separatorCounter = 0
-  let numberOfLetters = 0
 
   data.forEach((b,i) => {
 
@@ -29,15 +28,23 @@ const setMap = data => {
       counter = 0
 
     } else {
-      numberOfLetters = parseInt(DATA_MAPPING[separatorCounter].split('|')[1])
 
-      if (counter % numberOfLetters == 0) {
-        let block = ''
+      let dataMapItem = DATA_MAPPING[separatorCounter].split('|')
+      let typeOfData = dataMapItem[0]
+      let numberOfLetters = parseInt(dataMapItem[1])
 
-        for (let j = 0; j < numberOfLetters; j++)
-          block += CHARS[data[i + j]]
+      if (typeOfData == 'S' || typeOfData == 'E' || typeOfData == 'G') {
+        if (counter % numberOfLetters == 0) {
+          let block = ''
 
-        MAP[separatorCounter].push(block)
+          for (let j = 0; j < numberOfLetters; j++)
+            block += CHARS[data[i + j]]
+
+          MAP[separatorCounter].push(block)
+        }
+
+      } else if (typeOfData == 'O') {
+          MAP[separatorCounter].push(data[i])
       }
       counter++
     }
@@ -80,6 +87,18 @@ const testByData = word => {
 
         if (MAP[index].indexOf(block) != -1)
           counters[index]++
+      }
+
+    } else if (typeOfData == 'O') {
+      let letterOccurrence = {}
+      for (let i = 0; i < word.length; i++) {
+        letterOccurrence[word[i]] = letterOccurrence[word[i]] ? letterOccurrence[word[i]] + 1 : 1
+      }
+      for (let letter in letterOccurrence) {
+        if (letterOccurrence.hasOwnProperty(letter))
+          if ((letterOccurrence[letter] / word.length) * 255 > MAP[index][CHARS.indexOf(letter)]) {
+            counters[index]++
+          }
       }
     }
   })

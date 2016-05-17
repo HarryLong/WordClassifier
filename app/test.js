@@ -13,7 +13,8 @@ const srcs = [
   'sample_ending_elimination_2d.io',
   'sample_ending_elimination_3d.io',
   'sample_elimination_2d.io',
-  'sample_elimination_3d.io'
+  'sample_elimination_3d.io',
+  'char_occurence.io'
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
@@ -56,9 +57,9 @@ function initFiles () {
 }
 
 function processQueue () {
-  var tempArr = []
-  if(sourcePathsQueue.length > 5) {
-    let unSorted = sourcePathsQueue.splice(0, 6)
+  let tempArr = []
+  if(sourcePathsQueue.length > (srcs.length - 1)) {
+    let unSorted = sourcePathsQueue.splice(0, srcs.length)
     srcs.forEach((src, i) => {
       unSorted.forEach( unSortedSrc => {
         if (unSortedSrc.indexOf(src) != -1)
@@ -124,7 +125,7 @@ function testLive () {
     res.on('end', () => {
       let words = JSON.parse(body)
       let correctCounter = 0
-      for (var word in words) {
+      for (let word in words) {
         if (words.hasOwnProperty(word)) {
           let isEnglish = classifier.test(word)
           isEnglish == words[word] && correctCounter++
@@ -157,7 +158,7 @@ function testLocal () {
     wordsExisting.forEach( words => {
       counter++
       let correctCounter = 0
-      for (var word in words) {
+      for (let word in words) {
         if (words.hasOwnProperty(word)) {
           let isEnglish = classifier.test(word)
           isEnglish == words[word] && correctCounter++
@@ -170,9 +171,6 @@ function testLocal () {
             counters.falsefalse++
           else if(words[word] == false && isEnglish == true)
             counters.falsetrue++
-
-          //if(words[word] == true && isEnglish == false)
-          //  console.log(word, words[word], isEnglish)
         }
       }
       sum = sum + ((100 * correctCounter) / Object.keys(words).length)
