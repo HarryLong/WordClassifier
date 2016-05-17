@@ -3,11 +3,10 @@ const fs = require('fs')
 const path = require('path')
 const jsonfile = require('jsonfile')
 const http = require('follow-redirects').http
-const classifier = require('./classifier_eliminator')
+const classifier = require('./classifier')
 const combinedStream = require('combined-stream')
 const walk = require('walkdir')
 
-const zip = '../resources/sample_elimination_all.io.gz'
 const srcs = [
   'sample_start_elimination_2d.io',
   'sample_start_elimination_3d.io',
@@ -17,8 +16,10 @@ const srcs = [
   'sample_elimination_3d.io'
 ]
 const dest = '../resources/sample_elimination_all.io'
+const zip = '../resources/sample_elimination_all.io.gz'
 
 find()
+// retrieveTestData()
 
 var sourcePathsQueue = []
 var report = jsonfile.readFileSync('../report.json')
@@ -67,13 +68,13 @@ function init(sourcePaths) {
   if(!currentPath)
     return processQueue()
 
-  let checkedFile = path.dirname(currentPath) + '/checked.txt'
-  let isChecked = fs.existsSync(checkedFile)
-
-  if(isChecked)
-    return processQueue()
-
-  fs.writeFileSync(checkedFile, '');
+  // let checkedFile = path.dirname(currentPath) + '/checked.txt'
+  // let isChecked = fs.existsSync(checkedFile)
+  //
+  // if(isChecked)
+  //   return processQueue()
+  //
+  // fs.writeFileSync(checkedFile, '');
 
   let cs = combinedStream.create()
   sourcePaths.forEach(src => {
@@ -86,7 +87,6 @@ function init(sourcePaths) {
   )
 }
 
-// retrieveTestData()
 
 // create gzip
 function gzip () {
@@ -144,6 +144,13 @@ function testLocal() {
   let sum = 0
   let file = '../resources/test.json'
 
+  let counters = {
+    truetrue: 0,
+    truefalse: 0,
+    falsefalse: 0,
+    falsetrue: 0
+  }
+
   jsonfile.readFile(file, (err, wordsExisting) => {
     wordsExisting.forEach( words => {
       counter++
@@ -152,6 +159,18 @@ function testLocal() {
         if (words.hasOwnProperty(word)) {
           let isEnglish = classifier.test(word)
           isEnglish == words[word] && correctCounter++
+
+          if(words[word] == true && isEnglish == true)
+            counters.truetrue++
+          else if(words[word] == true && isEnglish == false)
+            counters.truefalse++
+          else if(words[word] == false && isEnglish == false)
+            counters.falsefalse++
+          else if(words[word] == false && isEnglish == true)
+            counters.falsetrue++
+
+          //if(words[word] == true && isEnglish == false)
+          //  console.log(word, words[word], isEnglish)
         }
       }
       sum = sum + ((100 * correctCounter) / Object.keys(words).length)
@@ -159,7 +178,7 @@ function testLocal() {
     })
 
     setReport((sum/counter).toFixed(2))
-    console.log('')
+    console.log('\n', counters)
     processQueue()
   })
 }
