@@ -12,8 +12,29 @@
 
 #include <thread>         // std::thread
 
-#define OUTPUT_CHAR_OCCURENCE "char_occurence.io"
-#define OUTPUT_CHAR_OCCURENCE_CSV "char_occurence.csv"
+#define OUTPUT_CHAR_OCCURENCE_MAX "char_occurence_max.io"
+#define OUTPUT_CHAR_OCCURENCE_MAX_CSV "char_occurence_max.csv"
+
+#define OUTPUT_CHAR_OCCURENCE_MEAN "char_occurence_mean.io"
+#define OUTPUT_CHAR_OCCURENCE_MEAN_CSV "char_occurence_mean.csv"
+
+#define OUTPUT_CHAR_OCCURENCE_SD "char_occurence_sd.io"
+#define OUTPUT_CHAR_OCCURENCE_SD_CSV "char_occurence_sd.csv"
+
+#define OUTPUT_CHAR_OCCURENCE_2SD "char_occurence_2sd.io"
+#define OUTPUT_CHAR_OCCURENCE_2SD_CSV "char_occurence_2sd.csv"
+
+#define OUTPUT_CHAR_OCCURENCE_3SD "char_occurence_3sd.io"
+#define OUTPUT_CHAR_OCCURENCE_3SD_CSV "char_occurence_3sd.csv"
+
+#define OUTPUT_CHAR_OCCURENCE_4SD "char_occurence_4sd.io"
+#define OUTPUT_CHAR_OCCURENCE_4SD_CSV "char_occurence_4sd.csv"
+
+#define OUTPUT_CHAR_OCCURENCE_5SD "char_occurence_5sd.io"
+#define OUTPUT_CHAR_OCCURENCE_5SD_CSV "char_occurence_5sd.csv"
+
+#define OUTPUT_CHAR_OCCURENCE_6SD "char_occurence_6sd.io"
+#define OUTPUT_CHAR_OCCURENCE_6SD_CSV "char_occurence_6sd.csv"
 
 #define OUTPUT_ELIMINATE_CSV_FILE_2D "sample_elimination_2d.csv"
 #define OUTPUT_ELIMINATE_CSV_FILE_3D "sample_elimination_3d.csv"
@@ -41,7 +62,9 @@
 #define START_ELIMINATE_IO_FILE_3D "sample_start_elimination_3d.io"
 #define START_ELIMINATE_CSV_FILE_3D "sample_start_elimination_3d.csv"
 
-#define INPUT_FILE "/home/harry/workspaces/qt-workspace/word-qualifier/resources/words.txt"
+#define INPUT_FILE "/home/harry/workspaces/qt-workspace/word-qualifier/resources/wordsV2.txt"
+//#define INPUT_FILE "/home/harry/workspaces/qt-workspace/word-qualifier/resources/words.txt"
+
 
 #define BASE_OUTPUT_DIR "/home/harry/workspaces/qt-workspace/word-qualifier/output_multithreaded/"
 
@@ -49,12 +72,12 @@
 
 //#define WRITE_CSV
 
-//#define VOWEL_STATS
-//#define GENERAL_STATS
+#define VOWEL_STATS
+#define GENERAL_STATS
 #define CHAR_OCCURENCE_STATS
-//#define GLOBAL_OCCURENCES
-//#define ENDING_OCCURENCES
-//#define START_OCCURENCES
+#define GLOBAL_OCCURENCES
+#define ENDING_OCCURENCES
+#define START_OCCURENCES
 
 #include "filemanager/logger.h"
 
@@ -106,8 +129,29 @@ static void generateCharOccurenceStats()
 #ifdef CHAR_OCCURENCE_STATS
   CharacterOccurenceAnalyzer _analyzer;
   _analyzer.analyze(INPUT_FILE);
-  _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE));
-  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_CSV));
+  _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_MAX), CharacterOccurenceAnalyzer::_MAX);
+  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_MAX_CSV), CharacterOccurenceAnalyzer::_MAX);
+
+  _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_MEAN), CharacterOccurenceAnalyzer::_MEAN);
+  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_MEAN_CSV), CharacterOccurenceAnalyzer::_MEAN);
+
+  _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_SD), CharacterOccurenceAnalyzer::_SD);
+  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_SD_CSV), CharacterOccurenceAnalyzer::_SD);
+
+  _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_2SD), CharacterOccurenceAnalyzer::_2SD);
+  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_2SD_CSV), CharacterOccurenceAnalyzer::_2SD);
+
+  _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_3SD), CharacterOccurenceAnalyzer::_3SD);
+  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_3SD_CSV), CharacterOccurenceAnalyzer::_3SD);
+
+  _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_4SD), CharacterOccurenceAnalyzer::_4SD);
+  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_4SD_CSV), CharacterOccurenceAnalyzer::_4SD);
+
+  _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_5SD), CharacterOccurenceAnalyzer::_5SD);
+  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_5SD_CSV), CharacterOccurenceAnalyzer::_5SD);
+
+    _analyzer.write(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_6SD), CharacterOccurenceAnalyzer::_6SD);
+  _analyzer.writeToCSV(std::string(STATS_DIR).append(OUTPUT_CHAR_OCCURENCE_6SD_CSV), CharacterOccurenceAnalyzer::_6SD);
 #endif // VOWEL_STATS
 }
 
@@ -216,34 +260,36 @@ int inNormalization)
 
 int main (int argc, char *argv[])
 {
-  generateVowelStats();
-  generateGeneralStats();
-  generateCharOccurenceStats();
-//  std::vector<std::thread> _threads;
+//  generateVowelStats();
+//  generateGeneralStats();
+//  generateCharOccurenceStats();
 
-//  for(int _threshold(20); _threshold < 40; _threshold++)
-//  {
-//    _threads.push_back(std::thread(run, _threshold, _threshold, _threshold, 10));
-//  }
-//  for(int _threshold(20); _threshold < 40; _threshold++)
-//  {
-//      _threads.push_back(std::thread(run, _threshold, _threshold, _threshold, -1));
-//  }
-//  for(int _startThreshold(0); _startThreshold < 20; _startThreshold++)
-//  {
-//    for(int _endThreshold(0); _endThreshold < 20; _endThreshold++)
-//    {
-//      for(int _globalThreshold(0); _globalThreshold < 20; _globalThreshold++)
-//      {
-//        _threads.push_back(std::thread(run, _startThreshold, _endThreshold, _globalThreshold, -1));
-////        std::thread _t(run, _startThreshold, _endThreshold, _globalThreshold, -1));
-////        run(_startThreshold, _endThreshold, _globalThreshold, -1);
-//      }
-//    }
-//  }
+//  run(5,19,3,-1);
+  std::vector<std::thread> _threads;
 
-//  for(auto _it(_threads.begin()); _it != _threads.end(); _it++)
-//  {
-//    _it->join();
-//  }
+  for(int _threshold(20); _threshold < 40; _threshold++)
+  {
+    _threads.push_back(std::thread(run, _threshold, _threshold, _threshold, 10));
+  }
+  for(int _threshold(20); _threshold < 40; _threshold++)
+  {
+      _threads.push_back(std::thread(run, _threshold, _threshold, _threshold, -1));
+  }
+  for(int _startThreshold(0); _startThreshold < 20; _startThreshold++)
+  {
+    for(int _endThreshold(0); _endThreshold < 20; _endThreshold++)
+    {
+      for(int _globalThreshold(0); _globalThreshold < 20; _globalThreshold++)
+      {
+        _threads.push_back(std::thread(run, _startThreshold, _endThreshold, _globalThreshold, -1));
+//        std::thread _t(run, _startThreshold, _endThreshold, _globalThreshold, -1));
+//        run(_startThreshold, _endThreshold, _globalThreshold, -1);
+      }
+    }
+  }
+
+  for(auto _it(_threads.begin()); _it != _threads.end(); _it++)
+  {
+    _it->join();
+  }
 }
