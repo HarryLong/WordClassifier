@@ -108,7 +108,7 @@ function merge (sourcePaths) {
   sourcePaths.push('../resources/char_occurence.io')
 
   // log source path
-  console.log('Source Path:', path.dirname(currentPath))
+  console.log('Testing Source Path:', path.dirname(currentPath))
 
   let cs = combinedStream.create()
   sourcePaths.forEach(src => {
