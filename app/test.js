@@ -25,7 +25,7 @@ let report
 let currentPath
 
 getReport()
-initFiles()
+initFolders()
 // retrieveTestData()
 
 function getReport () {
@@ -40,18 +40,46 @@ function setReport (average) {
   jsonfile.writeFileSync(reportFile, report, {spaces: 2})
 }
 
-function initFiles () {
+function initFolders () {
+  let directories = []
+
   walk('../')
-    .on('path', path => {
-      if(path.indexOf('/resources') != -1 || path.indexOf('/output') != -1)
-        srcs.forEach(src => {
-          if (path && path.indexOf(src) != -1) {
-            sourcePathsQueue.push(path)
-          }
-        })
+    .on('path', p => {
+      if(p.indexOf('.io') != -1)
+        if (directories.indexOf(path.dirname(p)) == -1)
+          directories.push(path.dirname(p))
+
     })
     .on('end', () => {
-      processQueue()
+      initFiles(directories)
+    })
+}
+
+function initFiles (directories) {
+
+  directories.forEach((dir, i) => {
+    let counter = 0
+    let tempArr = []
+
+    walk(dir)
+      .on('path', p => {
+
+        if(p.indexOf('.io') != -1)
+          srcs.forEach(src => {
+            if (p && p.indexOf(src) != -1) {
+              counter++
+              tempArr.push(p)
+
+              if(counter == srcs.length)
+                sourcePathsQueue = sourcePathsQueue.concat(tempArr)
+            }
+          })
+      })
+      .on('end', () => {
+        if(directories.length - 1 == i)
+          processQueue()
+      })
+
   })
 }
 
