@@ -7,7 +7,7 @@ const MIN_VOWEL_RATIO = 0.09
 const MAX_VOWEL_RATIO = 0.81
 
 // [type of data | number of letters | max fault tolerance]
-const DATA_MAPPING = ['S|2|0','S|3|0','E|2|0','E|3|0','G|2|0','G|3|0', 'O|1|0']
+const DATA_MAPPING = ['S|2|0','S|3|0','E|2|0','E|3|0','G|2|0','G|3|0', 'O|0|0']
 const DATA_SEPARATOR = 124 // ascii code of |
 
 let MAP
@@ -30,10 +30,9 @@ const setMap = data => {
     } else {
 
       let dataMapItem = DATA_MAPPING[separatorCounter].split('|')
-      let typeOfData = dataMapItem[0]
       let numberOfLetters = parseInt(dataMapItem[1])
 
-      if (typeOfData == 'S' || typeOfData == 'E' || typeOfData == 'G') {
+      if (numberOfLetters) {
         if (counter % numberOfLetters == 0) {
           let block = ''
 
@@ -43,8 +42,8 @@ const setMap = data => {
           MAP[separatorCounter].push(block)
         }
 
-      } else if (typeOfData == 'O') {
-          MAP[separatorCounter].push(data[i])
+      } else {
+        MAP[separatorCounter].push(data[i])
       }
       counter++
     }
@@ -90,13 +89,13 @@ const testByData = word => {
       }
 
     } else if (typeOfData == 'O') {
-      let letterOccurrence = {}
+      let occurrence = {}
       for (let i = 0; i < word.length; i++) {
-        letterOccurrence[word[i]] = letterOccurrence[word[i]] ? letterOccurrence[word[i]] + 1 : 1
+        occurrence[word[i]] = occurrence[word[i]] ? occurrence[word[i]] + 1 : 1
       }
-      for (let letter in letterOccurrence) {
-        if (letterOccurrence.hasOwnProperty(letter))
-          if ((letterOccurrence[letter] / word.length) * 255 > MAP[index][CHARS.indexOf(letter)]) {
+      for (let letter in occurrence) {
+        if (occurrence.hasOwnProperty(letter))
+          if ((occurrence[letter] / word.length) * 255 > MAP[index][CHARS.indexOf(letter)]) {
             counters[index]++
           }
       }
