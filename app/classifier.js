@@ -1,14 +1,14 @@
 const CHARS = 'abcdefghijklmnopqrstuvwxyz\''
-const VOWELS = 'aeiou'
-const CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
+const VOWELS_REGEX = new RegExp('[aeiou]', 'gi')
+const CONSONANTS_REGEX = new RegExp('[bcdfghjklmnpqrstvwxyz\']', 'gi')
+
+const MAX_WORD_LENGTH = 15
+const MIN_VOWEL_RATIO = 0.09
+const MAX_VOWEL_RATIO = 0.81
 
 // [type of data | number of letters | max fault tolerance]
 const DATA_MAPPING = ['S|2|0','S|3|0','E|2|0','E|3|0','G|2|0','G|3|0', 'O|1|0']
 const DATA_SEPARATOR = 124 // ascii code of |
-
-const MAX_WORD_LENGTH = 15
-const MIN_VOWEL_RATIO = 0.10
-const MAX_VOWEL_RATIO = 0.80
 
 let MAP
 
@@ -114,12 +114,10 @@ const testByData = word => {
 
 const testByVowelRatio = word => {
   let ratio
-  let noOfVowels = word.match(new RegExp(`[${VOWELS}]`, 'gi'))
-  let noOfConsonants = word.match(new RegExp(`[${CONSONANTS}]`, 'gi'))
+  let noOfVowels = word.match(VOWELS_REGEX)
 
   noOfVowels = noOfVowels ? noOfVowels.length : 0
-  noOfConsonants = noOfConsonants ? noOfConsonants.length : 0
-  ratio = noOfVowels / (noOfVowels + noOfConsonants)
+  ratio = noOfVowels / word.length
 
   return ratio > MIN_VOWEL_RATIO && ratio < MAX_VOWEL_RATIO
 }
