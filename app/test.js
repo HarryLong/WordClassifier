@@ -13,7 +13,8 @@ const srcs = [
   'sample_ending_elimination_2d.io',
   'sample_ending_elimination_3d.io',
   'sample_elimination_2d.io',
-  'sample_elimination_3d.io'
+  'sample_elimination_3d.io',
+  'sample_elimination_4d.io'
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
@@ -26,7 +27,6 @@ let currentPath
 
 getReport()
 initFolders()
-// retrieveTestData()
 
 function getReport () {
   if (!fs.existsSync(reportFile))
@@ -210,30 +210,5 @@ function testLocal () {
     setReport((sum/counter).toFixed(2))
     console.log('\n', counters)
     processQueue()
-  })
-}
-
-// test classifier
-function retrieveTestData () {
-
-  http.get('http://hola.org/challenges/word_classifier/testcase', (res) => {
-
-    let body = ''
-
-    res.on('data', chunk => {
-      body += chunk
-    })
-
-    res.on('end', () => {
-      let words = JSON.parse(body)
-
-      jsonfile.readFile(testFile, (err, wordsExisting) => {
-        console.log('Size:', wordsExisting.length)
-        wordsExisting.push(words)
-        jsonfile.writeFile(testFile, wordsExisting, function (err) {
-            retrieveTestData()
-        })
-      })
-    })
   })
 }
