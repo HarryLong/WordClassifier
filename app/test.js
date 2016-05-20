@@ -17,7 +17,7 @@ const srcs = [
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
-const testFile = '../resources/test.json'
+const testFile = '../output/test.json'
 const reportFile = '../report.json'
 
 let sourcePathsQueue = []
@@ -204,7 +204,7 @@ function testLocal () {
         }
       }
       sum = sum + ((100 * correctCounter) / Object.keys(words).length)
-      process.stdout.write(`Counter: ${counter} | Average: ${(sum/counter).toFixed(2)}%\r`)
+      process.stdout.write(`Counter: ${counter * 100} | Average: ${(sum/counter).toFixed(2)}%\r`)
     })
 
     setReport((sum/counter).toFixed(2))
