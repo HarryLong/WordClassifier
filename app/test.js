@@ -17,7 +17,7 @@ const srcs = [
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
-const testFile = '../output/test.json'
+const testFile = '../resources/test.json'
 const reportFile = '../report.json'
 
 let sourcePathsQueue = []
