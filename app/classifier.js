@@ -3,11 +3,11 @@ const VOWELS_REGEX = new RegExp('[aeiou]', 'gi')
 const CONSONANTS_REGEX = new RegExp('[bcdfghjklmnpqrstvwxyz\']', 'gi')
 
 const MAX_WORD_LENGTH = 15
-const MIN_VOWEL_RATIO = 0.05
-const MAX_VOWEL_RATIO = 0.71
+const MIN_VOWEL_RATIO = 0.09
+const MAX_VOWEL_RATIO = 0.80
 
 // [type of data | number of letters | max fault tolerance]
-const DATA_MAPPING = ['S|2|0','S|3|0','E|2|0','E|3|0','G|2|0','G|3|0','O|0|1']
+const DATA_MAPPING = ['S|2|0','S|3|0','E|2|0','E|3|0','G|2|0','G|3|0','O|0|0']
 const DATA_SEPARATOR = 124 // ascii code of |
 
 let MAP
