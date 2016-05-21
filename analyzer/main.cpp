@@ -186,22 +186,22 @@ int inNormalization)
   TreeFileElimination<3> _globalEliminator3D;
   _globalEliminator3D.process(_globalStrengthFile3D, inGlobalThreshold);
 
-  TreeFileElimination<4> _globalEliminator4D;
-  _globalEliminator4D.process(_strengthFile4D, inGlobalThreshold);
+//  TreeFileElimination<4> _globalEliminator4D;
+//  _globalEliminator4D.process(_strengthFile4D, inGlobalThreshold);
 
 //  std::cout << "Illiminating 4D" << std::endl;
-  _globalEliminator4D.eliminate(_globalEliminator3D);
+//  _globalEliminator4D.eliminate(_globalEliminator3D);
   _globalEliminator3D.eliminate(_globalEliminator2D);
 
   _globalEliminator2D.write(_uniqueDir + OUTPUT_ELIMINATE_IO_FILE_2D);
   _globalEliminator3D.write(_uniqueDir + OUTPUT_ELIMINATE_IO_FILE_3D);
 
-  _globalEliminator4D.write(_uniqueDir + OUTPUT_ELIMINATE_IO_FILE_4D);
+//  _globalEliminator4D.write(_uniqueDir + OUTPUT_ELIMINATE_IO_FILE_4D);
 
 #ifdef WRITE_CSV
   _globalEliminator2D.writeToCSV(_uniqueDir + OUTPUT_ELIMINATE_CSV_FILE_2D);
   _globalEliminator3D.writeToCSV(_uniqueDir + OUTPUT_ELIMINATE_CSV_FILE_3D);
-  _globalEliminator4D.writeToCSV(_uniqueDir + OUTPUT_ELIMINATE_CSV_FILE_4D);
+//  _globalEliminator4D.writeToCSV(_uniqueDir + OUTPUT_ELIMINATE_CSV_FILE_4D);
 #endif
 
 #endif
@@ -215,8 +215,8 @@ int inNormalization)
     EndingAnalyzer<3> _endingsAnalyzer3D;
     _endingsAnalyzer3D.analyze(INPUT_FILE, inNormalization);
 
-    EndingAnalyzer<4> _endingsAnalyzer4D;
-    _endingsAnalyzer4D.analyze(INPUT_FILE, inNormalization);
+//    EndingAnalyzer<4> _endingsAnalyzer4D;
+//    _endingsAnalyzer4D.analyze(INPUT_FILE, inNormalization);
 
     TreeFileElimination<2> _endingEliminator2D;
     _endingEliminator2D.process(_endingsAnalyzer2D, inEndThreshold);
@@ -224,26 +224,26 @@ int inNormalization)
     TreeFileElimination<3> _endingEliminator3D;
     _endingEliminator3D.process(_endingsAnalyzer3D, inEndThreshold);
 
-    TreeFileElimination<4> _endingEliminator4D;
-    _endingEliminator4D.process(_endingsAnalyzer4D, inEndThreshold);
+//    TreeFileElimination<4> _endingEliminator4D;
+//    _endingEliminator4D.process(_endingsAnalyzer4D, inEndThreshold);
 
     _endingEliminator2D.eliminate(_globalEliminator2D);
     _endingEliminator3D.eliminate(_globalEliminator3D);
-    _endingEliminator4D.eliminate(_globalEliminator4D);
+//    _endingEliminator4D.eliminate(_globalEliminator4D);
 
 
     _endingEliminator3D.eliminate(_endingEliminator2D);
-    _endingEliminator4D.eliminate(_endingEliminator3D);
+//    _endingEliminator4D.eliminate(_endingEliminator3D);
 
     _endingEliminator2D.write(_uniqueDir + ENDING_ELIMINATE_IO_FILE_2D);
     _endingEliminator3D.write(_uniqueDir + ENDING_ELIMINATE_IO_FILE_3D);
-    _endingEliminator4D.write(_uniqueDir + ENDING_ELIMINATE_IO_FILE_4D);
+//    _endingEliminator4D.write(_uniqueDir + ENDING_ELIMINATE_IO_FILE_4D);
 
 
 #ifdef WRITE_CSV
     _endingEliminator2D.writeToCSV(_uniqueDir + ENDING_ELIMINATE_CSV_FILE_2D);
     _endingEliminator3D.writeToCSV(_uniqueDir + ENDING_ELIMINATE_CSV_FILE_3D);
-    _endingEliminator4D.writeToCSV(_uniqueDir + ENDING_ELIMINATE_CSV_FILE_4D);
+//    _endingEliminator4D.writeToCSV(_uniqueDir + ENDING_ELIMINATE_CSV_FILE_4D);
 #endif
   }
 #endif // ENDING_OCCURENCES
@@ -256,8 +256,8 @@ int inNormalization)
     StartAnalyzer<3> _startAnalyzer3D;
     _startAnalyzer3D.analyze(INPUT_FILE, inNormalization);
 
-    StartAnalyzer<4> _startAnalyzer4D;
-    _startAnalyzer4D.analyze(INPUT_FILE, inNormalization);
+//    StartAnalyzer<4> _startAnalyzer4D;
+//    _startAnalyzer4D.analyze(INPUT_FILE, inNormalization);
 
     TreeFileElimination<2> _eliminator2D;
     _eliminator2D.process(_startAnalyzer2D, inStartThresholds);
@@ -265,25 +265,25 @@ int inNormalization)
     TreeFileElimination<3> _eliminator3D;
     _eliminator3D.process(_startAnalyzer3D, inStartThresholds);
 
-    TreeFileElimination<4> _eliminator4D;
-    _eliminator4D.process(_startAnalyzer4D, inStartThresholds);
+//    TreeFileElimination<4> _eliminator4D;
+//    _eliminator4D.process(_startAnalyzer4D, inStartThresholds);
 
     _eliminator2D.eliminate(_globalEliminator2D);
     _eliminator3D.eliminate(_globalEliminator3D);
-    _eliminator4D.eliminate(_globalEliminator4D);
+//    _eliminator4D.eliminate(_globalEliminator4D);
 
 
     _eliminator3D.eliminate(_eliminator2D);
-    _eliminator4D.eliminate(_eliminator3D);
+//    _eliminator4D.eliminate(_eliminator3D);
 
     _eliminator2D.write(_uniqueDir + START_ELIMINATE_IO_FILE_2D);
     _eliminator3D.write(_uniqueDir + START_ELIMINATE_IO_FILE_3D);
-    _eliminator4D.write(_uniqueDir + START_ELIMINATE_IO_FILE_4D);
+//    _eliminator4D.write(_uniqueDir + START_ELIMINATE_IO_FILE_4D);
 
 #ifdef WRITE_CSV
     _eliminator2D.writeToCSV(_uniqueDir + START_ELIMINATE_CSV_FILE_2D);
     _eliminator3D.writeToCSV(_uniqueDir + START_ELIMINATE_CSV_FILE_3D);
-    _eliminator4D.writeToCSV(_uniqueDir + START_ELIMINATE_CSV_FILE_4D);
+//    _eliminator4D.writeToCSV(_uniqueDir + START_ELIMINATE_CSV_FILE_4D);
 #endif
   }
 #endif // START_OCCURENCES
@@ -304,8 +304,8 @@ int main (int argc, char *argv[])
 ////  generateVowelStats();
 ////  generateGeneralStats();
 //  generateCharOccurenceStats();
-
   run(0,0,0,-1);
+  run(5,19,3,-1);
 }
 
 //  std::vector<std::thread> _threads;
