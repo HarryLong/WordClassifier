@@ -13,8 +13,7 @@ const srcs = [
   'sample_ending_elimination_2d.io',
   'sample_ending_elimination_3d.io',
   'sample_elimination_2d.io',
-  'sample_elimination_3d.io',
-  'sample_elimination_4d.io'
+  'sample_elimination_3d.io'
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
