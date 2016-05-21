@@ -2,13 +2,17 @@ const CHARS = 'abcdefghijklmnopqrstuvwxyz\''
 const VOWELS_REGEX = new RegExp('[aeiou]', 'gi')
 const CONSONANTS_REGEX = new RegExp('[bcdfghjklmnpqrstvwxyz\']', 'gi')
 
-const MAX_WORD_LENGTH = 15
-const MIN_VOWEL_RATIO = 0.09
-const MAX_VOWEL_RATIO = 0.80
+const MIN_WORD_LENGTH = 1
+const MAX_WORD_LENGTH = 14
+const MIN_VOWEL_RATIO = 0.07
+const MAX_VOWEL_RATIO = 0.73
+const MIN_CONSONANT_RATIO = 0.25
+const MAX_CONSONANT_RATIO = 0.90
 
 // [type of data | number of letters | max fault tolerance]
-const DATA_MAPPING = ['S|2|0','S|3|0','E|2|0','E|3|0','G|2|0','G|3|0','O|0|0']
+const DATA_MAPPING = ['S|2','S|3','E|2','E|3','G|2','G|3','O|0']
 const DATA_SEPARATOR = 124 // ascii code of |
+const DATA_FAULT_TOLERANCE = 0
 
 let MAP
 
@@ -50,12 +54,9 @@ const setMap = data => {
   })
 }
 
-const testByLength = word => {
-  return word.length < MAX_WORD_LENGTH
-}
 
 const testByData = word => {
-  let counters = {}
+  let faultCounter = 0
 
   DATA_MAPPING.forEach((data, index) => {
 
@@ -63,19 +64,17 @@ const testByData = word => {
     let typeOfData = data[0]
     let numberOfLetters = parseInt(data[1])
 
-    counters[index] = counters[index] || 0
-
     if (typeOfData == 'S') {
       let block = word.substr(0, numberOfLetters)
 
       if (MAP[index].indexOf(block) != -1)
-        counters[index]++
+        faultCounter++
 
     } else if (typeOfData == 'E') {
       let block = word.substr(-numberOfLetters)
 
       if (MAP[index].indexOf(block) != -1)
-        counters[index]++
+        faultCounter++
 
     } else if (typeOfData == 'G') {
       for (let i = 0; i < word.length - (numberOfLetters - 1); i++) {
@@ -85,7 +84,7 @@ const testByData = word => {
           block += word[i + j]
 
         if (MAP[index].indexOf(block) != -1)
-          counters[index]++
+          faultCounter++
       }
 
     } else if (typeOfData == 'O') {
@@ -96,19 +95,17 @@ const testByData = word => {
       for (let letter in occurrence) {
         if (occurrence.hasOwnProperty(letter))
           if ((occurrence[letter] / word.length) * 255 > MAP[index][CHARS.indexOf(letter)]) {
-            counters[index]++
+            faultCounter++
           }
       }
     }
   })
 
-  let flag = true
-  DATA_MAPPING.forEach((data, index) => {
-    let maxError = parseInt(data.split('|')[2])
-    if (counters[index] > maxError)
-      flag = false
-  })
-  return flag
+  return faultCounter <= DATA_FAULT_TOLERANCE
+}
+
+const testByLength = word => {
+  return word.length <= MAX_WORD_LENGTH && word.length >= MIN_WORD_LENGTH
 }
 
 const testByVowelRatio = word => {
@@ -118,10 +115,44 @@ const testByVowelRatio = word => {
   noOfVowels = noOfVowels ? noOfVowels.length : 0
   ratio = noOfVowels / word.length
 
-  return ratio > MIN_VOWEL_RATIO && ratio < MAX_VOWEL_RATIO
+  return ratio >= MIN_VOWEL_RATIO && ratio <= MAX_VOWEL_RATIO
+}
+
+const testByConsonantRatio = word => {
+  let ratio
+  let noOfConsonants = word.match(CONSONANTS_REGEX)
+
+  noOfConsonants = noOfConsonants ? noOfConsonants.length : 0
+  ratio = noOfConsonants / word.length
+
+  return ratio >= MIN_CONSONANT_RATIO && ratio <= MAX_CONSONANT_RATIO
+}
+
+const testWord = word => {
+  return testByLength(word) && testByVowelRatio(word) && testByConsonantRatio(word) && testByData(word)
+
+  // let resultLength = testByLength(word)
+  // // let resultVowelRatio = testByVowelRatio(word)
+  // // let resultConsonantRatio = testByConsonantRatio(word)
+  // let resultData = testByData(word)
+  //
+  //
+  // return resultData && resultLength
+  //
+  // // if(resultData && resultLength)
+  // //   return true
+  // // else
+  // //   return resultLength && resultVowelRatio && resultConsonantRatio && resultData
+  //
+  // // let weightLength = testByLength(word) ? 2 : 1
+  // // let weightVowelRatio = testByVowelRatio(word) ? 3 : 1
+  // // let weightConsonantRatio = testByConsonantRatio(word) ? 3 : 1
+  // // let weightData = testByData(word) ? 5 : 1
+  // //
+  // // return weightLength * weightVowelRatio * weightConsonantRatio * weightData > 50
 }
 
 module.exports = {
-  init: data => initMap(data),
-  test: word => testByLength(word) && testByData(word) && testByVowelRatio(word)
+  init: initMap,
+  test: testWord
 }

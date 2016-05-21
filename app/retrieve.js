@@ -1,7 +1,7 @@
 const jsonfile = require('jsonfile')
 const http = require('follow-redirects').http
 
-const testFile = '../resources/test.json'
+const testFile = '../output/test-large.json'
 
 retrieveTestData()
 
