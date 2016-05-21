@@ -51,7 +51,7 @@ template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & 
       }
       if(_valid)
       {
-        if(getIndex(_c, _index))
+        if(getIndex(&_c[0], _index))
         {
           mData[_index]++;
           Converter::fromChar(_c[0],_v);
@@ -62,12 +62,14 @@ template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & 
     }
     _file.close();
 
+
+
     //NORMALIZE
     if(inNormalization > 0)
     {
       for(int _i(0); _i < std::pow(27, n); _i++)
       {
-        mData[_i] = ((1.0 * mData[_i])/_totals[(unsigned int) (_i/std::pow(27, n-1))]) * inNormalization;
+        mData[_i] = (unsigned int) (((1.0 * mData[_i])/_totals[(unsigned int) (_i/std::pow(27, n-1))]) * inNormalization);
       }
     }
   }
@@ -75,7 +77,6 @@ template <unsigned int n> bool TreeFileStrength<n>::analyze(const std::string & 
   {
     std::cerr << "Failed to open file: " << inFilename << std::endl;
   }
-
   sMutex.unlock();
 }
 
@@ -139,7 +140,7 @@ template <unsigned int n> void TreeFileStrength<n>::generateDummyValues()
 }
 
 
-template <unsigned int n> bool TreeFileStrength<n>::getIndex(char inChars[n], unsigned int & outIndex) const
+template <unsigned int n> bool TreeFileStrength<n>::getIndex(char * inChars, unsigned int & outIndex) const
 {
   return Converter::getIndex(n, inChars, outIndex);
 }
@@ -151,6 +152,6 @@ template <unsigned int n> std::vector<char> TreeFileStrength<n>::getChars(int in
 
 template <unsigned int n> const unsigned int * TreeFileStrength<n>::getData() const
 {
-  return mData;
+  return &mData[0];
 }
 

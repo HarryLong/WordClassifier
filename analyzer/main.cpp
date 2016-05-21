@@ -55,12 +55,17 @@
 #define ENDING_ELIMINATE_CSV_FILE_2D "sample_ending_elimination_2d.csv"
 #define ENDING_ELIMINATE_IO_FILE_3D "sample_ending_elimination_3d.io"
 #define ENDING_ELIMINATE_CSV_FILE_3D "sample_ending_elimination_3d.csv"
+#define ENDING_ELIMINATE_IO_FILE_4D "sample_ending_elimination_4d.io"
+#define ENDING_ELIMINATE_CSV_FILE_4D "sample_ending_elimination_4d.csv"
 
 #define START_ELIMINATE_IO_FILE_2D "sample_start_elimination_2d.io"
 #define START_ELIMINATE_CSV_FILE_2D "sample_start_elimination_2d.csv"
 
 #define START_ELIMINATE_IO_FILE_3D "sample_start_elimination_3d.io"
 #define START_ELIMINATE_CSV_FILE_3D "sample_start_elimination_3d.csv"
+
+#define START_ELIMINATE_IO_FILE_4D "sample_start_elimination_4d.io"
+#define START_ELIMINATE_CSV_FILE_4D "sample_start_elimination_4d.csv"
 
 #define INPUT_FILE "/home/harry/workspaces/qt-workspace/word-qualifier/resources/wordsV2.txt"
 //#define INPUT_FILE "/home/harry/workspaces/qt-workspace/word-qualifier/resources/words.txt"
@@ -191,12 +196,14 @@ int inNormalization)
   _globalEliminator2D.write(_uniqueDir + OUTPUT_ELIMINATE_IO_FILE_2D);
   _globalEliminator3D.write(_uniqueDir + OUTPUT_ELIMINATE_IO_FILE_3D);
 
+  _globalEliminator4D.write(_uniqueDir + OUTPUT_ELIMINATE_IO_FILE_4D);
+
 #ifdef WRITE_CSV
   _globalEliminator2D.writeToCSV(_uniqueDir + OUTPUT_ELIMINATE_CSV_FILE_2D);
   _globalEliminator3D.writeToCSV(_uniqueDir + OUTPUT_ELIMINATE_CSV_FILE_3D);
+  _globalEliminator4D.writeToCSV(_uniqueDir + OUTPUT_ELIMINATE_CSV_FILE_4D);
 #endif
-  _globalEliminator4D.write(OUTPUT_ELIMINATE_IO_FILE_4D);
-  _globalEliminator4D.writeToCSV(OUTPUT_ELIMINATE_CSV_FILE_4D);
+
 #endif
 
 
@@ -208,22 +215,35 @@ int inNormalization)
     EndingAnalyzer<3> _endingsAnalyzer3D;
     _endingsAnalyzer3D.analyze(INPUT_FILE, inNormalization);
 
+    EndingAnalyzer<4> _endingsAnalyzer4D;
+    _endingsAnalyzer4D.analyze(INPUT_FILE, inNormalization);
+
     TreeFileElimination<2> _endingEliminator2D;
     _endingEliminator2D.process(_endingsAnalyzer2D, inEndThreshold);
 
     TreeFileElimination<3> _endingEliminator3D;
     _endingEliminator3D.process(_endingsAnalyzer3D, inEndThreshold);
 
+    TreeFileElimination<4> _endingEliminator4D;
+    _endingEliminator4D.process(_endingsAnalyzer4D, inEndThreshold);
+
     _endingEliminator2D.eliminate(_globalEliminator2D);
     _endingEliminator3D.eliminate(_globalEliminator3D);
+    _endingEliminator4D.eliminate(_globalEliminator4D);
+
+
     _endingEliminator3D.eliminate(_endingEliminator2D);
+    _endingEliminator4D.eliminate(_endingEliminator3D);
 
     _endingEliminator2D.write(_uniqueDir + ENDING_ELIMINATE_IO_FILE_2D);
     _endingEliminator3D.write(_uniqueDir + ENDING_ELIMINATE_IO_FILE_3D);
+    _endingEliminator4D.write(_uniqueDir + ENDING_ELIMINATE_IO_FILE_4D);
+
 
 #ifdef WRITE_CSV
-    _endingEliminator3D.writeToCSV(_uniqueDir + ENDING_ELIMINATE_CSV_FILE_3D);
     _endingEliminator2D.writeToCSV(_uniqueDir + ENDING_ELIMINATE_CSV_FILE_2D);
+    _endingEliminator3D.writeToCSV(_uniqueDir + ENDING_ELIMINATE_CSV_FILE_3D);
+    _endingEliminator4D.writeToCSV(_uniqueDir + ENDING_ELIMINATE_CSV_FILE_4D);
 #endif
   }
 #endif // ENDING_OCCURENCES
@@ -236,76 +256,99 @@ int inNormalization)
     StartAnalyzer<3> _startAnalyzer3D;
     _startAnalyzer3D.analyze(INPUT_FILE, inNormalization);
 
+    StartAnalyzer<4> _startAnalyzer4D;
+    _startAnalyzer4D.analyze(INPUT_FILE, inNormalization);
+
     TreeFileElimination<2> _eliminator2D;
     _eliminator2D.process(_startAnalyzer2D, inStartThresholds);
 
     TreeFileElimination<3> _eliminator3D;
     _eliminator3D.process(_startAnalyzer3D, inStartThresholds);
 
-    _eliminator2D.eliminate(_globalEliminator2D);
+    TreeFileElimination<4> _eliminator4D;
+    _eliminator4D.process(_startAnalyzer4D, inStartThresholds);
 
+    _eliminator2D.eliminate(_globalEliminator2D);
     _eliminator3D.eliminate(_globalEliminator3D);
+    _eliminator4D.eliminate(_globalEliminator4D);
+
+
     _eliminator3D.eliminate(_eliminator2D);
+    _eliminator4D.eliminate(_eliminator3D);
 
     _eliminator2D.write(_uniqueDir + START_ELIMINATE_IO_FILE_2D);
     _eliminator3D.write(_uniqueDir + START_ELIMINATE_IO_FILE_3D);
+    _eliminator4D.write(_uniqueDir + START_ELIMINATE_IO_FILE_4D);
 
 #ifdef WRITE_CSV
     _eliminator2D.writeToCSV(_uniqueDir + START_ELIMINATE_CSV_FILE_2D);
     _eliminator3D.writeToCSV(_uniqueDir + START_ELIMINATE_CSV_FILE_3D);
+    _eliminator4D.writeToCSV(_uniqueDir + START_ELIMINATE_CSV_FILE_4D);
 #endif
   }
 #endif // START_OCCURENCES
 }
 
+//int main (int argc, char *argv[])
+//{
+//  char _c[3] {'h', 't', 'd'};
+
+//  unsigned int _v (0);
+//  Converter::getIndex(3, _c, _v);
+//  std::cout << "Value: " << _v;
+
+//}
+
 int main (int argc, char *argv[])
 {
-//  generateVowelStats();
-//  generateGeneralStats();
-  generateCharOccurenceStats();
+////  generateVowelStats();
+////  generateGeneralStats();
+//  generateCharOccurenceStats();
 
-  run(5,19,3,-1);
-
-  std::vector<std::thread> _threads;
-
-//  for(int _threshold(20); _threshold < 40; _threshold++)
-//  {
-//    _threads.push_back(std::thread(run, _threshold, _threshold, _threshold, 10));
-//  }
-//  for(int _threshold(20); _threshold < 40; _threshold++)
-//  {
-//      _threads.push_back(std::thread(run, _threshold, _threshold, _threshold, -1));
-//  }
-
-//  for(int _startThreshold(0); _startThreshold < 20; _startThreshold++)
-//  {
-//    for(int _endThreshold(0); _endThreshold < 20; _endThreshold++)
-//    {
-//      for(int _globalThreshold(0); _globalThreshold < 20; _globalThreshold++)
-//      {
-//        _threads.push_back(std::thread(run, _startThreshold, _endThreshold, _globalThreshold, -1 ));
-////        std::thread _t(run, _startThreshold, _endThreshold, _globalThreshold, -1));
-////        run(_startThreshold, _endThreshold, _globalThreshold, -1);
-//      }
-//    }
-//  }
-
-
-//  for(int _startThreshold(0); _startThreshold < 20; _startThreshold++)
-//  {
-//    for(int _endThreshold(0); _endThreshold < 20; _endThreshold++)
-//    {
-//      for(int _globalThreshold(0); _globalThreshold < 20; _globalThreshold++)
-//      {
-//        _threads.push_back(std::thread(run, _startThreshold, _endThreshold, _globalThreshold,  10000 ));
-////        std::thread _t(run, _startThreshold, _endThreshold, _globalThreshold, -1));
-////        run(_startThreshold, _endThreshold, _globalThreshold, -1);
-//      }
-//    }
-//  }
-
-  for(auto _it(_threads.begin()); _it != _threads.end(); _it++)
-  {
-    _it->join();
-  }
+  run(0,0,0,-1);
 }
+
+//  std::vector<std::thread> _threads;
+
+////  for(int _threshold(20); _threshold < 40; _threshold++)
+////  {
+////    _threads.push_back(std::thread(run, _threshold, _threshold, _threshold, 10));
+////  }
+////  for(int _threshold(20); _threshold < 40; _threshold++)
+////  {
+////      _threads.push_back(std::thread(run, _threshold, _threshold, _threshold, -1));
+////  }
+
+////  for(int _startThreshold(0); _startThreshold < 20; _startThreshold++)
+////  {
+////    for(int _endThreshold(0); _endThreshold < 20; _endThreshold++)
+////    {
+////      for(int _globalThreshold(0); _globalThreshold < 20; _globalThreshold++)
+////      {
+////        _threads.push_back(std::thread(run, _startThreshold, _endThreshold, _globalThreshold, -1 ));
+//////        std::thread _t(run, _startThreshold, _endThreshold, _globalThreshold, -1));
+//////        run(_startThreshold, _endThreshold, _globalThreshold, -1);
+////      }
+////    }
+////  }
+
+
+////  for(int _startThreshold(0); _startThreshold < 20; _startThreshold++)
+////  {
+////    for(int _endThreshold(0); _endThreshold < 20; _endThreshold++)
+////    {
+////      for(int _globalThreshold(0); _globalThreshold < 20; _globalThreshold++)
+////      {
+////        _threads.push_back(std::thread(run, _startThreshold, _endThreshold, _globalThreshold,  10000 ));
+//////        std::thread _t(run, _startThreshold, _endThreshold, _globalThreshold, -1));
+//////        run(_startThreshold, _endThreshold, _globalThreshold, -1);
+////      }
+////    }
+////  }
+
+//  for(auto _it(_threads.begin()); _it != _threads.end(); _it++)
+//  {
+//    _it->join();
+//  }
+//}
+

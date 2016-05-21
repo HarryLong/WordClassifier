@@ -23,7 +23,7 @@ public:
   const unsigned int * getData() const;
 protected:
   void reset();
-  bool getIndex(char inChars[n], unsigned int & outIndex) const;
+  bool getIndex(char * inChars, unsigned int & outIndex) const;
   std::vector<char> getChars(int inIndex) const;
 
   unsigned int mData[(unsigned int)pow(27,n)];

@@ -49,12 +49,15 @@ template <unsigned int n> bool TreeFileElimination<n>::contains(const Combinatio
   return false;
 }
 
+
+#include <iostream>
 template <unsigned int n> bool TreeFileElimination<n>::process(const TreeFileStrength<n> & inTreeFile, unsigned int inThreshold /*= 0*/)
 {
-  const unsigned int * _data(inTreeFile.getData());
+  const unsigned int * _data = inTreeFile.getData();
   unsigned int _v;
   for(int _i(0); _i < pow(27, n); _i++)
   {
+
     if(_data[_i] <= inThreshold)
     {
       std::vector<char> _chars(Converter::getChars(n, _i));
