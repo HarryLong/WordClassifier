@@ -4,8 +4,7 @@ const file = '../resources/wordsV2.txt'
 
 collect()
 
-let existingWordsString = fs.readFileSync(file).toString().split("\n")
-let existingWordsArray = fs.readFileSync(file).toString().split("\n")
+let existingWords = fs.readFileSync(file).toString().split("\n")
 
 // test classifier
 function collect () {
@@ -23,15 +22,14 @@ function collect () {
       let words = JSON.parse(body)
       for (let word in words) {
         if (words.hasOwnProperty(word)) {
-          if(words[word] && !existingWordsString.includes(word)) {
+          if(words[word] && !existingWords.includes(word)) {
             counter++
-            existingWordsArray.push(word)
-            existingWordsString += `\n${word}`
+            existingWords.push(word)
             wordsFile.write(word + '\n')
           }
         }
       }
-      console.log('added', counter, '/', existingWordsArray.length)
+      console.log('added', counter, '/', existingWords.length)
       wordsFile.end()
       collect()
     })
