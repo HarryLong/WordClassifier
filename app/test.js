@@ -13,11 +13,12 @@ const srcs = [
   'sample_ending_elimination_2d.io',
   'sample_ending_elimination_3d.io',
   'sample_elimination_2d.io',
-  'sample_elimination_3d.io'
+  'sample_elimination_3d.io',
+  'sample_elimination_4d.io'
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
-const testFile = '../resources/test.json'
+const testFile = '../output/test-large.json'
 const reportFile = '../report.json'
 
 let sourcePathsQueue = []
@@ -44,7 +45,7 @@ function initFolders () {
 
   walk('../')
     .on('path', p => {
-      if(p.indexOf('.io') != -1)
+      if (p.indexOf('.io') != -1)
         if (directories.indexOf(path.dirname(p)) == -1)
           directories.push(path.dirname(p))
 
@@ -55,7 +56,6 @@ function initFolders () {
 }
 
 function initFiles (directories) {
-
   directories.forEach((dir, i) => {
     let counter = 0
     let tempArr = []
@@ -111,7 +111,11 @@ function merge (sourcePaths) {
 
   let cs = combinedStream.create()
   sourcePaths.forEach(src => {
-    cs.append(fs.createReadStream(src))
+    if (src.indexOf('sample_elimination_4d') != -1)
+      cs.append(fs.createReadStream(src, {start: 11536, end: 67105}).on('data', b=>console.log(b.length)))
+    else
+      cs.append(fs.createReadStream(src))
+
     cs.append(new Buffer('|'))
   })
   cs.pipe(
@@ -120,25 +124,25 @@ function merge (sourcePaths) {
   )
 }
 
-
-// create gzip
 function gzip () {
   fs.createReadStream(dest)
     .pipe(zlib.createGzip())
     .pipe(
       fs.createWriteStream(zip)
-        .on('close', run)
+        .on('close', () => {
+          console.log('Gzip File Size', (fs.statSync(zip)['size'] / 1024).toFixed(2), 'kb')
+          run()
+        })
     )
 }
 
-// read gzip
 function run () {
   classifier.init(
     zlib.gunzipSync(fs.readFileSync(zip))
   )
   testLocal()
 }
-// test classifier
+
 function testLive () {
   let counter = 0
   let sum = 0

@@ -2,19 +2,19 @@ const CHARS = 'abcdefghijklmnopqrstuvwxyz\''
 const VOWELS_REGEX = new RegExp('[aeiou]', 'gi')
 const CONSONANTS_REGEX = new RegExp('[bcdfghjklmnpqrstvwxyz\']', 'gi')
 
-const MIN_WORD_LENGTH = 1
+const MIN_WORD_LENGTH = 2
 const MAX_WORD_LENGTH = 14
-const MIN_VOWEL_RATIO = 0.07
-const MAX_VOWEL_RATIO = 0.73
+const MIN_VOWEL_RATIO = 0.08
+const MAX_VOWEL_RATIO = 0.83
 const MIN_CONSONANT_RATIO = 0.25
 const MAX_CONSONANT_RATIO = 0.90
 
-// [type of data | number of letters | max fault tolerance]
-const DATA_MAPPING = ['S|2','S|3','E|2','E|3','G|2','G|3','O|0']
+// [type of data | number of letters]
+const DATA_MAPPING = ['S|2','S|3','E|2','E|3','G|2','G|3','G|4','O|0']
 const DATA_SEPARATOR = 124 // ascii code of |
 const DATA_FAULT_TOLERANCE = 0
 
-let MAP
+let MAP = []
 
 const initMap = data => {
   MAP = DATA_MAPPING.map(() => [])
@@ -53,7 +53,6 @@ const setMap = data => {
     }
   })
 }
-
 
 const testByData = word => {
   let faultCounter = 0
@@ -109,48 +108,26 @@ const testByLength = word => {
 }
 
 const testByVowelRatio = word => {
-  let ratio
   let noOfVowels = word.match(VOWELS_REGEX)
-
   noOfVowels = noOfVowels ? noOfVowels.length : 0
-  ratio = noOfVowels / word.length
-
+  let ratio = noOfVowels / word.length
   return ratio >= MIN_VOWEL_RATIO && ratio <= MAX_VOWEL_RATIO
 }
 
 const testByConsonantRatio = word => {
-  let ratio
   let noOfConsonants = word.match(CONSONANTS_REGEX)
-
   noOfConsonants = noOfConsonants ? noOfConsonants.length : 0
-  ratio = noOfConsonants / word.length
-
+  let ratio = noOfConsonants / word.length
   return ratio >= MIN_CONSONANT_RATIO && ratio <= MAX_CONSONANT_RATIO
 }
 
-const testWord = word => {
-  return testByLength(word) && testByVowelRatio(word) && testByConsonantRatio(word) && testByData(word)
-
-  // let resultLength = testByLength(word)
-  // // let resultVowelRatio = testByVowelRatio(word)
-  // // let resultConsonantRatio = testByConsonantRatio(word)
-  // let resultData = testByData(word)
-  //
-  //
-  // return resultData && resultLength
-  //
-  // // if(resultData && resultLength)
-  // //   return true
-  // // else
-  // //   return resultLength && resultVowelRatio && resultConsonantRatio && resultData
-  //
-  // // let weightLength = testByLength(word) ? 2 : 1
-  // // let weightVowelRatio = testByVowelRatio(word) ? 3 : 1
-  // // let weightConsonantRatio = testByConsonantRatio(word) ? 3 : 1
-  // // let weightData = testByData(word) ? 5 : 1
-  // //
-  // // return weightLength * weightVowelRatio * weightConsonantRatio * weightData > 50
-}
+const testWord = word =>
+      word ?
+      testByLength(word) &&
+      testByVowelRatio(word) &&
+      testByConsonantRatio(word) &&
+      testByData(word) :
+      false
 
 module.exports = {
   init: initMap,
