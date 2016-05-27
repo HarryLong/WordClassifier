@@ -10,16 +10,20 @@ const walk = require('walkdir')
 const srcs = [
   'sample_start_elimination_2d.io',
   'sample_start_elimination_3d.io',
+  'sample_start_elimination_4d.io',
   'sample_ending_elimination_2d.io',
   'sample_ending_elimination_3d.io',
+  'sample_ending_elimination_4d.io',
   'sample_elimination_2d.io',
   'sample_elimination_3d.io',
-  'sample_elimination_4d.io'
+  'sample_elimination_4d.io',
+  'char_occurence.io'
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
-const testFile = '../resources/test.json'
+const testFile = '../output/test-100k.json'
 const reportFile = '../report.json'
+const scriptFile = 'classifier.js'
 
 let sourcePathsQueue = []
 let report
@@ -43,7 +47,7 @@ function setReport (average) {
 function initFolders () {
   let directories = []
 
-  walk('../')
+  walk('../best')
     .on('path', p => {
       if (p.indexOf('.io') != -1)
         if (directories.indexOf(path.dirname(p)) == -1)
@@ -103,19 +107,23 @@ function merge (sourcePaths) {
   if(!currentPath || report[path.dirname(currentPath)])
     return processQueue()
 
-  // push extra individuals
-  sourcePaths.push('../resources/char_occurence.io')
-
   // log source path
   console.log('Testing Source Path:', path.dirname(currentPath))
 
   let cs = combinedStream.create()
   sourcePaths.forEach(src => {
-    if (src.indexOf('sample_elimination_4d') != -1)
-      cs.append(fs.createReadStream(src, {start: 11536, end: 67105}).on('data', b=>console.log(b.length)))
-    else
-      cs.append(fs.createReadStream(src))
+    if (src.indexOf('4d') != -1) {
+      let divisionSize = 64
+      let chunkSize = Math.floor((fs.statSync(src)['size'] / 4) / divisionSize)
+      for (let i = 0; i < divisionSize; i++)
+        cs.append(fs.createReadStream(src, {
+          start: i * chunkSize * 4,
+          end: (i * chunkSize * 4) + (303)
+        }).on('data', b => console.log(b.length, i * chunkSize * 4, i * chunkSize * 4 + 287)))
 
+    } else {
+      cs.append(fs.createReadStream(src))
+    }
     cs.append(new Buffer('|'))
   })
   cs.pipe(
@@ -130,6 +138,10 @@ function gzip () {
     .pipe(
       fs.createWriteStream(zip)
         .on('close', () => {
+          require('child_process').exec('uglifyjs classifier.js -o classifier.min.js -mc')
+          let sizeOfScript = fs.statSync(scriptFile)['size']
+          let sizeOfData = fs.statSync(zip)['size']
+          console.log('Total size:', sizeOfScript + sizeOfData)
           console.log('Gzip File Size', (fs.statSync(zip)['size'] / 1024).toFixed(2), 'kb')
           run()
         })

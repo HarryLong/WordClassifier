@@ -1,16 +1,24 @@
 const CHARS = 'abcdefghijklmnopqrstuvwxyz\''
 const VOWELS_REGEX = new RegExp('[aeiou]', 'gi')
-const CONSONANTS_REGEX = new RegExp('[bcdfghjklmnpqrstvwxyz\']', 'gi')
 
 const MIN_WORD_LENGTH = 2
 const MAX_WORD_LENGTH = 14
-const MIN_VOWEL_RATIO = 0.08
-const MAX_VOWEL_RATIO = 0.83
-const MIN_CONSONANT_RATIO = 0.25
-const MAX_CONSONANT_RATIO = 0.90
+const MIN_VOWEL_RATIO = 0.10
+const MAX_VOWEL_RATIO = 0.85
 
 // [type of data | number of letters]
-const DATA_MAPPING = ['S|2','S|3','E|2','E|3','G|2','G|3','G|4','O|0']
+const DATA_MAPPING = [
+  'S|2',
+  'S|3',
+  'S|4',
+  'E|2',
+  'E|3',
+  'E|4',
+  'G|2',
+  'G|3',
+  'G|4',
+  'O|0'
+]
 const DATA_SEPARATOR = 124 // ascii code of |
 const DATA_FAULT_TOLERANCE = 0
 
@@ -77,10 +85,7 @@ const testByData = word => {
 
     } else if (typeOfData == 'G') {
       for (let i = 0; i < word.length - (numberOfLetters - 1); i++) {
-        let block = ''
-
-        for (let j = 0; j < numberOfLetters; j++)
-          block += word[i + j]
+        let block = word.substr(i, numberOfLetters)
 
         if (MAP[index].indexOf(block) != -1)
           faultCounter++
@@ -109,25 +114,11 @@ const testByLength = word => {
 
 const testByVowelRatio = word => {
   let noOfVowels = word.match(VOWELS_REGEX)
-  noOfVowels = noOfVowels ? noOfVowels.length : 0
-  let ratio = noOfVowels / word.length
+  let ratio = noOfVowels ? noOfVowels.length / word.length : 0
   return ratio >= MIN_VOWEL_RATIO && ratio <= MAX_VOWEL_RATIO
 }
 
-const testByConsonantRatio = word => {
-  let noOfConsonants = word.match(CONSONANTS_REGEX)
-  noOfConsonants = noOfConsonants ? noOfConsonants.length : 0
-  let ratio = noOfConsonants / word.length
-  return ratio >= MIN_CONSONANT_RATIO && ratio <= MAX_CONSONANT_RATIO
-}
-
-const testWord = word =>
-      word ?
-      testByLength(word) &&
-      testByVowelRatio(word) &&
-      testByConsonantRatio(word) &&
-      testByData(word) :
-      false
+const testWord = word => word && testByLength(word) && testByVowelRatio(word) && testByData(word)
 
 module.exports = {
   init: initMap,
