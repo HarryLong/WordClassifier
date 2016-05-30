@@ -3,27 +3,25 @@ const fs = require('fs')
 const path = require('path')
 const jsonfile = require('jsonfile')
 const http = require('follow-redirects').http
-const classifier = require('./classifier')
 const combinedStream = require('combined-stream')
 const walk = require('walkdir')
 
 const srcs = [
   'sample_start_elimination_2d.io',
   'sample_start_elimination_3d.io',
-  'sample_start_elimination_4d.io',
+  // 'sample_start_elimination_4d.io',
   'sample_ending_elimination_2d.io',
   'sample_ending_elimination_3d.io',
-  'sample_ending_elimination_4d.io',
+  // 'sample_ending_elimination_4d.io',
   'sample_elimination_2d.io',
   'sample_elimination_3d.io',
-  'sample_elimination_4d.io',
-  'char_occurence.io'
+  'sample_elimination_4d.io'
 ]
 const dest = '../resources/sample_elimination_all.io'
 const zip = '../resources/sample_elimination_all.io.gz'
 const testFile = '../output/test-100k.json'
 const reportFile = '../report.json'
-const scriptFile = 'classifier.js'
+const scriptFile = 'classifier.min.js'
 
 let sourcePathsQueue = []
 let report
@@ -118,8 +116,8 @@ function merge (sourcePaths) {
       for (let i = 0; i < divisionSize; i++)
         cs.append(fs.createReadStream(src, {
           start: i * chunkSize * 4,
-          end: (i * chunkSize * 4) + (303)
-        }).on('data', b => console.log(b.length, i * chunkSize * 4, i * chunkSize * 4 + 287)))
+          end: (i * chunkSize * 4) + (967)
+        }))//.on('data', b => console.log(b.length, i * chunkSize * 4, i * chunkSize * 4 + 287)))
 
     } else {
       cs.append(fs.createReadStream(src))
@@ -138,24 +136,27 @@ function gzip () {
     .pipe(
       fs.createWriteStream(zip)
         .on('close', () => {
-          require('child_process').exec('uglifyjs classifier.js -o classifier.min.js -mc')
+          require('child_process').execSync('uglifyjs classifier.js -o classifier.min.js -mc --wrap')
           let sizeOfScript = fs.statSync(scriptFile)['size']
           let sizeOfData = fs.statSync(zip)['size']
+          console.log('Script size:', sizeOfScript)
+          console.log('Data size:', sizeOfData)
           console.log('Total size:', sizeOfScript + sizeOfData)
-          console.log('Gzip File Size', (fs.statSync(zip)['size'] / 1024).toFixed(2), 'kb')
+          console.log('Remaining / Exceeds:', 65536 - (sizeOfScript + sizeOfData))
           run()
         })
     )
 }
 
 function run () {
+  const classifier = require(`./classifier.min`)
   classifier.init(
     zlib.gunzipSync(fs.readFileSync(zip))
   )
-  testLocal()
+  testLocal(classifier)
 }
 
-function testLive () {
+function testLive (classifier) {
   let counter = 0
   let sum = 0
 
@@ -188,7 +189,7 @@ function testLive () {
   })
 }
 
-function testLocal () {
+function testLocal (classifier) {
   let counter = 0
   let sum = 0
 
